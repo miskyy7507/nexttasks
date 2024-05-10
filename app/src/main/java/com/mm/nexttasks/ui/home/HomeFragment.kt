@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.mm.nexttasks.R
+import com.mm.nexttasks.TaskModel
 import com.mm.nexttasks.databinding.FragmentHomeBinding
+import com.mm.todoapp.TaskListAdapter
 
 class HomeFragment : Fragment() {
 
@@ -16,6 +19,8 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val taskModels: ArrayList<TaskModel> = ArrayList()
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -24,14 +29,29 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textH
+        val recyclerView = binding.todoList
 
-        textView.text = "This is home Fragment"
+        setUpTaskListModels()
+        
+        val adapter = TaskListAdapter(this.context!!, taskModels)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this.context)
+
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setUpTaskListModels() {
+        val taskNames = resources.getStringArray(R.array.task_names)
+        val taskCategories = resources.getStringArray(R.array.task_categories)
+        val taskDeadlines = resources.getStringArray(R.array.task_deadlines)
+
+        for (i in taskNames.indices) {
+            taskModels.add(TaskModel(taskNames[i], taskCategories[i], taskDeadlines[i], false))
+        }
     }
 }

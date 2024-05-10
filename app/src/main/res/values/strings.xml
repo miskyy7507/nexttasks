@@ -10,4 +10,34 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    <string-array name="task_names">
+        <item>Wyrzucić śmieci</item>
+        <item>Przygotować jedzenie dla gości</item>
+        <item>Złożyć wniosek</item>
+        <item>Zrobić zakupy na święta</item>
+        <item>Zorganizować wyjazd na wakacje</item>
+        <item>Remont pokoju</item>
+        <item>Lorem ipsum</item>
+    </string-array>
+
+    <string-array name="task_categories">
+        <item>Dom</item>
+        <item>Dom</item>
+        <item>Praca</item>
+        <item>Dom</item>
+        <item>Inne</item>
+        <item>Dom</item>
+        <item>Dolor sit amet</item>
+    </string-array>
+
+    <string-array name="task_deadlines">
+        <item>Do końca dnia</item>
+        <item>19:30 · ~2 godz.</item>
+        <item>Do końca dnia</item>
+        <item>Do końca dnia · ~1 godz. 30 min</item>
+        <item>Do końca dnia</item>
+        <item>Do końca dnia</item>
+        <item>Do końca dnia</item>
+    </string-array>
 </resources>

@@ -29,6 +29,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:theme="@style/Widget.Design.FloatingActionButton"
+        app:maxImageSize="32dp"
+        app:srcCompat="@drawable/plus_32" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
