@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
 
         setUpTaskListModels()
         
-        val adapter = TaskListAdapter(this.context!!, taskModels)
+        val adapter = TaskListAdapter(this.requireContext(), taskModels)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
@@ -50,8 +50,8 @@ class HomeFragment : Fragment() {
         val taskCategories = resources.getStringArray(R.array.task_categories)
         val taskDeadlines = resources.getStringArray(R.array.task_deadlines)
 
-        for (i in taskNames.indices) {
-            taskModels.add(TaskModel(taskNames[i], taskCategories[i], taskDeadlines[i], false))
-        }
+//        for (i in taskNames.indices) {
+//            taskModels.add(TaskModel(taskNames[i], taskCategories[i], taskDeadlines[i], false))
+//        }
     }
 }

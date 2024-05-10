@@ -27,12 +27,12 @@ class TaskListAdapter(val context: Context, val taskList: ArrayList<TaskModel>) 
         // assigning values to the views we created in the task_card layout file
         // based on the position of the recycler view
 
-        holder.taskNameLabel.text = taskList[position].taskName
-        holder.taskCategoryLabel.text = taskList[position].taskCategory
-        holder.taskDeadlineLabel.text = taskList[position].taskDeadline
-        holder.taskNameLabel.isChecked = taskList[position].taskIsDone
+        holder.taskNameLabel.text = taskList[position].title
+        holder.taskCategoryLabel.text = taskList[position].category
+        holder.taskDeadlineLabel.text = taskList[position].termTimestamp.toString()
+        holder.taskNameLabel.isChecked = taskList[position].isDone
 //        holder.taskColorTab.setBackgroundColor((-16777216..-1).random())
-        holder.taskColorTab.setBackgroundColor(context.getColor(R.color.task_tab_color_yellow))
+        holder.taskColorTab.setBackgroundColor(taskList[position].cardColor)
     }
 
     override fun getItemCount(): Int {
