@@ -1,6 +1,7 @@
 package com.mm.nexttasks
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
@@ -38,16 +39,12 @@ class TaskEditActivity : AppCompatActivity() {
             )
 
             val db = TodoDatabaseHelper(it.context)
-            db.addTask(task)
-            finish()
+            val result = db.addTask(task)
+
+            if (result != -1L) {
+                Toast.makeText(this, "Dodano zadanie", Toast.LENGTH_SHORT).show()
+            }
         }
-
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.task_edit)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.mm.nexttasks
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
@@ -18,9 +19,9 @@ class TodoDatabaseHelper(context: Context?) :
         db.execSQL("CREATE TABLE Tasks (" +
                 "taskID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "title TEXT, " +
+                "done INTEGER, " +
                 "category TEXT, " +
                 "priority TEXT, " +
-                "done INTEGER, " +
                 "cardColor INTEGER, " +
                 "termTimestamp INTEGER" +
                 ");")
@@ -31,7 +32,7 @@ class TodoDatabaseHelper(context: Context?) :
         this.onCreate(db)
     }
 
-    fun addTask(task: TaskModel) {
+    fun addTask(task: TaskModel): Long {
         val db: SQLiteDatabase = this.writableDatabase
         val cv: ContentValues = ContentValues()
 
@@ -43,8 +44,18 @@ class TodoDatabaseHelper(context: Context?) :
         cv.put("termTimestamp", task.termTimestamp)
 
         val result = db.insert("Tasks", null, cv)
-        if (result == -1L) {
-            //@TODO add error handling
+        return result
+    }
+
+    fun readAllData(): Cursor? {
+        val readQuery = "SELECT * FROM Tasks"
+        val db: SQLiteDatabase? = this.writableDatabase
+
+        var cursor: Cursor? = null
+        if (db != null) {
+            cursor = db.rawQuery(readQuery, null)
         }
+
+        return cursor
     }
 }
