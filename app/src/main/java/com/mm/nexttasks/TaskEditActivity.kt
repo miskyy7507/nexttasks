@@ -3,15 +3,10 @@ package com.mm.nexttasks
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.navigation.ui.AppBarConfiguration
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
 
 class TaskEditActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityTaskEditBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +26,7 @@ class TaskEditActivity : AppCompatActivity() {
         addButton.setOnClickListener {
             val task = TaskModel(
                 titleInput.text.toString().trim(),
-                taskDoneCheckbox.isChecked(),
+                taskDoneCheckbox.isChecked,
                 categoryInput.text.toString().trim(),
                 priorityInput.text.toString().trim(),
                 getColor(R.color.task_tab_color_yellow),

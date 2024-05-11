@@ -5,14 +5,13 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
-import android.widget.Toast
 
-class TodoDatabaseHelper(context: Context?) :
+class TodoDatabaseHelper(private val context: Context?) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         const val DATABASE_NAME: String = "TodoList.db"
         const val DATABASE_VERSION: Int = 1
+
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -33,8 +32,8 @@ class TodoDatabaseHelper(context: Context?) :
     }
 
     fun addTask(task: TaskModel): Long {
-        val db: SQLiteDatabase = this.writableDatabase
-        val cv: ContentValues = ContentValues()
+        val db = this.writableDatabase
+        val cv = ContentValues()
 
         cv.put("title", task.title)
         cv.put("category", task.category)
@@ -44,17 +43,15 @@ class TodoDatabaseHelper(context: Context?) :
         cv.put("termTimestamp", task.termTimestamp)
 
         val result = db.insert("Tasks", null, cv)
+
         return result
     }
 
-    fun readAllData(): Cursor? {
+    fun readAllData(): Cursor {
         val readQuery = "SELECT * FROM Tasks"
-        val db: SQLiteDatabase? = this.writableDatabase
+        val db: SQLiteDatabase = this.writableDatabase
 
-        var cursor: Cursor? = null
-        if (db != null) {
-            cursor = db.rawQuery(readQuery, null)
-        }
+        val cursor: Cursor = db.rawQuery(readQuery, null)
 
         return cursor
     }

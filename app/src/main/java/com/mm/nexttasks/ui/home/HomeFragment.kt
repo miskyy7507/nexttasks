@@ -7,11 +7,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mm.nexttasks.R
 import com.mm.nexttasks.TaskModel
 import com.mm.nexttasks.TodoDatabaseHelper
 import com.mm.nexttasks.databinding.FragmentHomeBinding
-import com.mm.todoapp.TaskListAdapter
+import com.mm.nexttasks.TaskListAdapter
 
 class HomeFragment : Fragment() {
 
@@ -71,13 +70,5 @@ class HomeFragment : Fragment() {
                 )
             )
         }
-
-//        val taskNames = resources.getStringArray(R.array.task_names)
-//        val taskCategories = resources.getStringArray(R.array.task_categories)
-//        val taskDeadlines = resources.getStringArray(R.array.task_deadlines)
-
-//        for (i in taskNames.indices) {
-//            taskModels.add(TaskModel(taskNames[i], taskCategories[i], taskDeadlines[i], false))
-//        }
     }
 }
