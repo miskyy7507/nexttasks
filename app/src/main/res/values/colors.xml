@@ -17,4 +17,5 @@
     <color name="task_tab_color_yellow">#FFFFDD52</color>
     <color name="task_tab_color_green">#FF52FF8C</color>
     <color name="task_tab_color_blue">#FF5259FF</color>
+    <color name="task_tab_color_gray">#FFD9D9D9</color>
 </resources>

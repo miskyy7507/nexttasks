@@ -11,54 +11,99 @@
         android:id="@+id/taskTitleInput"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="Zadanie"
         android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/taskDoneCheckbox"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/taskPriorityInput"
+    <CheckBox
+        android:id="@+id/taskDoneCheckbox"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:hint="Priorytet"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/taskTermInput"
+        android:layout_marginTop="8dp"
+        android:text="Wykonano"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskCategoryInput" />
+        app:layout_constraintTop_toBottomOf="@+id/taskTitleInput" />
+
+    <RadioGroup
+        android:id="@+id/colorPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taskDoneCheckbox">
+
+        <RadioButton
+            android:id="@+id/colorNoneChoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Brak" />
+
+        <RadioButton
+            android:id="@+id/colorRedChoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Czerwony" />
+
+        <RadioButton
+            android:id="@+id/colorYellowChoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Żółty" />
+
+        <RadioButton
+            android:id="@+id/colorGreenChoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zielony" />
+
+        <RadioButton
+            android:id="@+id/colorBlueChoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Niebieski" />
+
+    </RadioGroup>
 
     <EditText
         android:id="@+id/taskCategoryInput"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Kategoria"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskDoneCheckbox" />
+        app:layout_constraintTop_toBottomOf="@+id/colorPicker" />
+
+    <EditText
+        android:id="@+id/taskPriorityInput"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Priorytet"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taskCategoryInput" />
 
     <EditText
         android:id="@+id/taskTermInput"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Termin"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taskPriorityInput" />
 
@@ -69,21 +114,7 @@
         android:layout_marginTop="32dp"
         android:text="Dodaj"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taskTermInput" />
-
-    <CheckBox
-        android:id="@+id/taskDoneCheckbox"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="104dp"
-        android:text="Wykonano"
-        app:layout_constraintBottom_toTopOf="@+id/taskCategoryInput"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskTitleInput" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

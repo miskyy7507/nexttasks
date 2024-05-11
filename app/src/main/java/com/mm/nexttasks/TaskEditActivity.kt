@@ -20,16 +20,24 @@ class TaskEditActivity : AppCompatActivity() {
         val priorityInput = binding.taskPriorityInput
         val taskTermInput = binding.taskTermInput
         val addButton = binding.addButton
-
+        val colorPickerRadios = binding.colorPicker
 
 
         addButton.setOnClickListener {
+            val colorChosen = when (colorPickerRadios.checkedRadioButtonId) {
+                R.id.colorRedChoice -> R.color.task_tab_color_red
+                R.id.colorYellowChoice -> R.color.task_tab_color_yellow
+                R.id.colorGreenChoice -> R.color.task_tab_color_green
+                R.id.colorBlueChoice -> R.color.task_tab_color_blue
+                else -> R.color.task_tab_color_gray
+            }
+
             val task = TaskModel(
                 titleInput.text.toString().trim(),
                 taskDoneCheckbox.isChecked,
                 categoryInput.text.toString().trim(),
                 priorityInput.text.toString().trim(),
-                getColor(R.color.task_tab_color_yellow),
+                getColor(colorChosen),
                 taskTermInput.text.toString().toInt()
             )
 
