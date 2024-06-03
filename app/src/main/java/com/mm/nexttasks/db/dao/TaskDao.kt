@@ -5,11 +5,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.mm.nexttasks.db.entities.Task
+import com.mm.nexttasks.db.views.TaskDetails
 
 @Dao
 interface TaskDao {
-    @Query("SELECT * FROM Task")
-    fun getAll(): List<Task>
+    @Query("SELECT * FROM TaskDetails")
+    fun getAll(): List<TaskDetails>
 
     @Insert
     fun insert(task: Task)

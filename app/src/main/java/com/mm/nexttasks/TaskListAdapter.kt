@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mm.nexttasks.databinding.TaskCardBinding
 import com.mm.nexttasks.db.views.TaskDetails
 
-class TaskListAdapter(val context: Context, val taskList: ArrayList<TaskDetails>) : RecyclerView.Adapter<TaskListAdapter.MyViewHolder>() {
+class TaskListAdapter(private val context: Context, private val taskList: ArrayList<TaskDetails>)
+    : RecyclerView.Adapter<TaskListAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : MyViewHolder {
         // this is where you inflate the layout
@@ -21,12 +23,11 @@ class TaskListAdapter(val context: Context, val taskList: ArrayList<TaskDetails>
         // assigning values to the views we created in the task_card layout file
         // based on the position of the recycler view
 
-//        holder.taskNameLabel.text = taskList[position].title
-//        holder.taskCategoryLabel.text = taskList[position].category
-//        holder.taskDeadlineLabel.text = taskList[position].termTimestamp.toString()
-//        holder.taskNameLabel.isChecked = taskList[position].isDone
-//        holder.taskColorTab.setBackgroundColor((-16777216..-1).random())
-//        holder.taskColorTab.setBackgroundColor(taskList[position].cardColor)
+        holder.binding.taskLabel.text = taskList[position].title
+        holder.binding.taskCategory.text = taskList[position].categoryName
+        holder.binding.taskDeadlineText.text = taskList[position].term.toString()
+        holder.binding.taskLabel.isChecked = taskList[position].isDone
+        holder.binding.taskCardColor.setBackgroundColor(taskList[position].cardColor ?: 2131100398)
     }
 
     override fun getItemCount(): Int {
@@ -34,9 +35,6 @@ class TaskListAdapter(val context: Context, val taskList: ArrayList<TaskDetails>
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val taskNameLabel = itemView.findViewById<CheckBox>(R.id.taskLabel)
-//        val taskCategoryLabel = itemView.findViewById<TextView>(R.id.taskCategory)
-//        val taskDeadlineLabel = itemView.findViewById<TextView>(R.id.taskDeadlineText)
-//        val taskColorTab = itemView.findViewById<View>(R.id.taskCardColor)
+        val binding = TaskCardBinding.bind(itemView)
     }
 }

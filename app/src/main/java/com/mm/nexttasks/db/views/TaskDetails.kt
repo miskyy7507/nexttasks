@@ -7,7 +7,7 @@ import java.util.Date
     SELECT Task.*, Category.name as categoryName, Priority.name as priorityName, TaskList.name as taskListName FROM Task
     LEFT JOIN Category ON Task.categoryId = Category.categoryId
     LEFT JOIN Priority ON Task.priorityId = Priority.priorityId
-    LEFT JOIN TaskList ON Task.taskListId = TaskList.taskListId
+    INNER JOIN TaskList ON Task.taskListId = TaskList.taskListId;
 """)
 data class TaskDetails (
     val taskId: Int,
