@@ -7,4 +7,6 @@ import androidx.room.PrimaryKey
 data class TaskList (
     @PrimaryKey(autoGenerate = true) val taskListId: Int,
     val name: String,
-)
+) {
+    override fun toString() = this.name
+}

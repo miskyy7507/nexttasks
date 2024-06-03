@@ -8,5 +8,5 @@ data class Category (
     @PrimaryKey(autoGenerate = true) val categoryId: Int,
     val name: String,
 ) {
-    override fun toString() = name
+    override fun toString() = this.name
 }

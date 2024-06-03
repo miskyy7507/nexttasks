@@ -3,6 +3,7 @@ package com.mm.nexttasks
 import android.app.Application
 import androidx.room.Room
 import com.mm.nexttasks.db.AppDatabase
+import com.mm.nexttasks.db.entities.TaskList
 
 class MainApp : Application() {
     override fun onCreate() {
@@ -11,6 +12,11 @@ class MainApp : Application() {
             applicationContext,
             AppDatabase::class.java, "app-db-main"
         ).allowMainThreadQueries().build()
+
+        // if no task lists, create a new, 'main' one
+        if (database!!.taskListDao().getAll().isEmpty()) {
+            database!!.taskListDao().insert(TaskList(0, "Główna lista zadań"))
+        }
     }
 
     companion object {

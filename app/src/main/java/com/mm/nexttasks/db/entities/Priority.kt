@@ -7,4 +7,6 @@ import androidx.room.PrimaryKey
 data class Priority (
     @PrimaryKey(autoGenerate = true) val priorityId: Int,
     val name: String,
-)
+) {
+    override fun toString() = this.name
+}
