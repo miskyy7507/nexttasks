@@ -12,7 +12,7 @@ interface CategoryDao {
     fun getAll(): List<Category>
 
     @Insert
-    fun insert(category: Category)
+    fun insert(category: Category): Long
 
     @Delete
     fun delete(category: Category)

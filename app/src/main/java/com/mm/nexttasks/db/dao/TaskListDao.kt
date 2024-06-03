@@ -12,7 +12,7 @@ interface TaskListDao {
     fun getAll(): List<TaskList>
 
     @Insert
-    fun insert(taskList: TaskList)
+    fun insert(taskList: TaskList): Long
 
     @Delete
     fun delete(taskList: TaskList)

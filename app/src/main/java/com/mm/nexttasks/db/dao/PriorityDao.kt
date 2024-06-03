@@ -12,7 +12,7 @@ interface PriorityDao {
     fun getAll(): List<Priority>
 
     @Insert
-    fun insert(priority: Priority)
+    fun insert(priority: Priority): Long
 
     @Delete
     fun delete(priority: Priority)

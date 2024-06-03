@@ -10,13 +10,13 @@ import java.util.Date
     INNER JOIN TaskList ON Task.taskListId = TaskList.taskListId;
 """)
 data class TaskDetails (
-    val taskId: Int,
+    val taskId: Long,
     val title: String,
-    val taskListId: Int,
+    val taskListId: Long,
     val taskListName: String,
-    val priorityId: Int?,
+    val priorityId: Long?,
     val priorityName: String?,
-    val categoryId: Int?,
+    val categoryId: Long?,
     val categoryName: String?,
     val isDone: Boolean,
     val cardColor: Int?,

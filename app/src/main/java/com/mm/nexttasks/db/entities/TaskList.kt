@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class TaskList (
-    @PrimaryKey(autoGenerate = true) val taskListId: Int,
+    @PrimaryKey(autoGenerate = true) val taskListId: Long,
     val name: String,
 ) {
     override fun toString() = this.name
