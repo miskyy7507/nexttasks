@@ -1,26 +1,23 @@
-package com.mm.todoapp
+package com.mm.nexttasks
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.mm.nexttasks.R
 import com.mm.nexttasks.db.views.TaskDetails
 
 class TaskListAdapter(val context: Context, val taskList: ArrayList<TaskDetails>) : RecyclerView.Adapter<TaskListAdapter.MyViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : TaskListAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : MyViewHolder {
         // this is where you inflate the layout
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.task_card, parent, false)
 
-        return TaskListAdapter.MyViewHolder(view)
+        return MyViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: TaskListAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // assigning values to the views we created in the task_card layout file
         // based on the position of the recycler view
 
