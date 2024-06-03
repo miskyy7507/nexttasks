@@ -47,7 +47,7 @@ class TaskEditActivity : AppCompatActivity() {
         taskListSpinner.adapter = taskListSpinnerAdapter
 
         binding.addButton.setOnClickListener {
-            val taskName = titleInput.text.trim().toString()
+            val taskName = titleInput.text?.trim().toString()
             val taskListId = taskListSpinnerAdapter.getItem(taskListSpinner.selectedItemPosition)!!.taskListId
             var priorityId: Int? = prioritySpinnerAdapter.getItem(prioritySpinner.selectedItemPosition)!!.priorityId
             if (priorityId == 0) {
