@@ -7,7 +7,6 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.InputType
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -18,14 +17,23 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.material.textfield.TextInputEditText
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
 import com.mm.nexttasks.db.entities.*
 import java.util.Calendar
+import java.util.Date
+
 
 class TaskEditActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityTaskEditBinding
+
+    public lateinit var datePickerInput: TextInputEditText
+    public lateinit var timePickerInput: TextInputEditText
+
+    private val date: Date = Date()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -160,8 +168,6 @@ class TaskEditActivity : AppCompatActivity() {
                 else -> R.color.task_tab_color_gray
             }
 
-            // val term = TODO
-
             val taskToAdd = Task(0, taskName, taskListId, priorityId, categoryId, isDone, getColor(colorChosen), null)
 
             taskDao.insert(taskToAdd)
@@ -170,13 +176,13 @@ class TaskEditActivity : AppCompatActivity() {
 
         }
 
-        val datePickerInput = binding.taskDateInput
+        datePickerInput = binding.taskDateInput
         datePickerInput.inputType = InputType.TYPE_NULL
         datePickerInput.setOnClickListener {
             DatePickerFragment().show(fragmentManager, "datePicker")
         }
 
-        val timePickerInput = binding.taskTimeInput
+        timePickerInput = binding.taskTimeInput
         timePickerInput.inputType = InputType.TYPE_NULL
         timePickerInput.setOnClickListener {
             TimePickerFragment().show(fragmentManager, "timePicker")
@@ -199,7 +205,8 @@ class TaskEditActivity : AppCompatActivity() {
         }
 
         override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-            // Do something with the date the user picks.
+            val listener = activity as? TaskEditActivity
+            listener?.datePickerInput?.setText(day.toString() + "." + (month + 1) + "." + year)
         }
     }
 
@@ -217,7 +224,8 @@ class TaskEditActivity : AppCompatActivity() {
         }
 
         override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-            // Do something with the time the user picks.
+            val listener = activity as? TaskEditActivity
+            listener?.timePickerInput?.setText("$hourOfDay:$minute")
         }
     }
 
