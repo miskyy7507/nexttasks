@@ -14,7 +14,7 @@ import com.mm.nexttasks.TaskListAdapter
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskDao
 
-class HomeFragment : Fragment() {
+class HomeFragment(selectedItemNames: String?) : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -27,6 +27,8 @@ class HomeFragment : Fragment() {
     private var taskDao: TaskDao? = null
 
     private val taskModels: ArrayList<TaskDetails> = ArrayList()
+
+    private val selectedItemName = selectedItemNames
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -42,7 +44,7 @@ class HomeFragment : Fragment() {
         _database = MainApp.database!!
         taskDao = database.taskDao()
 
-        setUpTaskListModels()
+        setUpTaskListModels(selectedItemName)
         
         val adapter = TaskListAdapter(this.requireContext(), taskModels)
         recyclerView.adapter = adapter
@@ -56,8 +58,13 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun setUpTaskListModels() {
-        val tasks = taskDao!!.getAll()
+    private fun setUpTaskListModels(selectedItemName: String?) {
+        val tasks: List<TaskDetails>?
+        if (selectedItemName != null) {
+            tasks = taskDao!!.getTasksFromList(selectedItemName)
+        } else {
+            tasks = taskDao!!.getAll()
+        }
         if (tasks.isNotEmpty()) {
             binding.noTasksTip.visibility = GONE
         }

@@ -16,6 +16,8 @@ class MainApp : Application() {
         // if no task lists, create a new, 'main' one
         if (database!!.taskListDao().getAll().isEmpty()) {
             database!!.taskListDao().insert(TaskList(0, "Główna lista zadań"))
+            database!!.taskListDao().insert(TaskList(0, "Poboczna lista zadań"))
+            database!!.taskListDao().insert(TaskList(0, "Lista zadań nr 3"))
         }
     }
 

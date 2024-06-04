@@ -12,6 +12,9 @@ interface TaskDao {
     @Query("SELECT * FROM TaskDetails")
     fun getAll(): List<TaskDetails>
 
+    @Query("SELECT * FROM TaskDetails WHERE taskListName LIKE :taskListName")
+    fun getTasksFromList(taskListName: String): List<TaskDetails>
+
     @Insert
     fun insert(task: Task): Long
 

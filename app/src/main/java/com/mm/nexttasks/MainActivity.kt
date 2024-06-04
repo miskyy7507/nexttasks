@@ -3,20 +3,26 @@ package com.mm.nexttasks
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import androidx.appcompat.app.ActionBarDrawerToggle
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.mm.nexttasks.databinding.ActivityMainBinding
+import com.mm.nexttasks.db.AppDatabase
+import com.mm.nexttasks.db.dao.TaskListDao
+import com.mm.nexttasks.ui.home.HomeFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private var _database: AppDatabase? = null
+    private val database get() = _database!!
+    private var taskListDao: TaskListDao? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,21 +30,62 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
+        val toolbar = binding.appBarMain.toolbar
+
+        setSupportActionBar(toolbar)
+
+        _database = MainApp.database!!
+        taskListDao = database.taskListDao()
 
         binding.appBarMain.fab.setOnClickListener {
             val intent = Intent(this, TaskEditActivity::class.java)
             startActivity(intent)
         }
+
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        val taskListsList = taskListDao!!.getAll()
+
+        navView.menu.add("Wszystkie listy zadań")
+        for (list in taskListsList) {
+            navView.menu.add(list.name)
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment_content_main, HomeFragment(null))
+            .commit()
+
+        // Set up the click listener for the navigation drawer items
+        navView.setNavigationItemSelectedListener { menuItem ->
+            // Get the selected item from the database
+            val selectedItem = menuItem.title.toString()
+            val taskList = if (selectedItem == "Wszystkie listy zadań") {null} else selectedItem
+
+            // Update the fragment with the selected item's information
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, HomeFragment(taskList))
+                .commit()
+
+            drawerLayout.close()
+            true
+        }
+
+//        val navController = findNavController(R.id.nav_host_fragment_content_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home), drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+//        appBarConfiguration = AppBarConfiguration(setOf(
+//                R.id.nav_home), drawerLayout)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+//        navView.setupWithNavController(navController)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
