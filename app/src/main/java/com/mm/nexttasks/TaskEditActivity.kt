@@ -1,17 +1,26 @@
 package com.mm.nexttasks
 
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.DialogFragment
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.InputType
+import android.text.format.DateFormat
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
 import com.mm.nexttasks.db.entities.*
+import java.util.Calendar
 
 class TaskEditActivity : AppCompatActivity() {
 
@@ -160,6 +169,57 @@ class TaskEditActivity : AppCompatActivity() {
             Toast.makeText(this, "Added new task", Toast.LENGTH_LONG).show()
 
         }
+
+        val datePickerInput = binding.taskDateInput
+        datePickerInput.inputType = InputType.TYPE_NULL
+        datePickerInput.setOnClickListener {
+            DatePickerFragment().show(fragmentManager, "datePicker")
+        }
+
+        val timePickerInput = binding.taskTimeInput
+        timePickerInput.inputType = InputType.TYPE_NULL
+        timePickerInput.setOnClickListener {
+            TimePickerFragment().show(fragmentManager, "timePicker")
+        }
+
     }
+
+    class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            // Use the current date as the default date in the picker.
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
+
+            // Create a new instance of DatePickerDialog and return it.
+            return DatePickerDialog(activity, this, year, month, day)
+
+        }
+
+        override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
+            // Do something with the date the user picks.
+        }
+    }
+
+
+    class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            // Use the current time as the default values for the picker.
+            val c = Calendar.getInstance()
+            val hour = c.get(Calendar.HOUR_OF_DAY)
+            val minute = c.get(Calendar.MINUTE)
+
+            // Create a new instance of TimePickerDialog and return it.
+            return TimePickerDialog(activity, this, hour, minute, DateFormat.is24HourFormat(activity))
+        }
+
+        override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+            // Do something with the time the user picks.
+        }
+    }
+
 
 }
