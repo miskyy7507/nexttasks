@@ -2,7 +2,6 @@ package com.mm.nexttasks
 
 import android.app.DatePickerDialog
 import android.app.Dialog
-import android.app.DialogFragment
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.InputType
@@ -17,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
 import com.mm.nexttasks.db.entities.*
@@ -179,13 +179,13 @@ class TaskEditActivity : AppCompatActivity() {
         datePickerInput = binding.taskDateInput
         datePickerInput.inputType = InputType.TYPE_NULL
         datePickerInput.setOnClickListener {
-            DatePickerFragment().show(fragmentManager, "datePicker")
+            DatePickerFragment().show(supportFragmentManager, "datePicker")
         }
 
         timePickerInput = binding.taskTimeInput
         timePickerInput.inputType = InputType.TYPE_NULL
         timePickerInput.setOnClickListener {
-            TimePickerFragment().show(fragmentManager, "timePicker")
+            TimePickerFragment().show(supportFragmentManager, "timePicker")
         }
 
     }
@@ -200,7 +200,7 @@ class TaskEditActivity : AppCompatActivity() {
             val day = c.get(Calendar.DAY_OF_MONTH)
 
             // Create a new instance of DatePickerDialog and return it.
-            return DatePickerDialog(activity, this, year, month, day)
+            return DatePickerDialog(requireContext(), this, year, month, day)
 
         }
 
@@ -220,7 +220,7 @@ class TaskEditActivity : AppCompatActivity() {
             val minute = c.get(Calendar.MINUTE)
 
             // Create a new instance of TimePickerDialog and return it.
-            return TimePickerDialog(activity, this, hour, minute, DateFormat.is24HourFormat(activity))
+            return TimePickerDialog(requireContext(), this, hour, minute, DateFormat.is24HourFormat(activity))
         }
 
         override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
