@@ -9,8 +9,11 @@ import android.text.format.DateFormat
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.RadioGroup
+import android.widget.Spinner
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -21,18 +24,22 @@ import com.google.android.material.textfield.TextInputEditText
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
 import com.mm.nexttasks.db.entities.*
 import java.util.Calendar
-import java.util.Date
-
 
 class TaskEditActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityTaskEditBinding
 
-    public lateinit var datePickerInput: TextInputEditText
-    public lateinit var timePickerInput: TextInputEditText
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
-    private val date: Date = Date()
+    private lateinit var titleInput: TextInputEditText
+    private lateinit var taskDoneCheckbox: CheckBox
+    private lateinit var colorPickerRadios: RadioGroup
+    private lateinit var datePickerInput: TextInputEditText
+    private lateinit var timePickerInput: TextInputEditText
+    private lateinit var categorySpinner: Spinner
+    private lateinit var prioritySpinner: Spinner
+    private lateinit var taskListSpinner: Spinner
+
+    private lateinit var taskDeadlineCalendar: Calendar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +53,15 @@ class TaskEditActivity : AppCompatActivity() {
         binding = ActivityTaskEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val titleInput = binding.taskTitleInput
-        val taskDoneCheckbox = binding.taskDoneCheckbox
-        val colorPickerRadios = binding.colorPicker
+        titleInput = binding.taskTitleInput
+        taskDoneCheckbox = binding.taskDoneCheckbox
+        colorPickerRadios = binding.colorPicker
+        datePickerInput = binding.taskDateInput
+        timePickerInput = binding.taskTimeInput
+        categorySpinner = binding.taskCategorySpinner
+        prioritySpinner = binding.taskPrioritySpinner
+        taskListSpinner = binding.taskListPicker
 
-        val categorySpinner = binding.taskCategorySpinner
         val categories = (listOf(Category(0, "Brak")) + categoryDao.getAll() + listOf(Category(-1, "Nowa kategoria..."))).toMutableList()
         val categorySpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -96,7 +107,6 @@ class TaskEditActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {} // Do nothing
         }
 
-        val prioritySpinner = binding.taskPrioritySpinner
         val priorities = (listOf(Priority(0, "Brak priorytetu")) + priorityDao.getAll() + listOf(Priority(-1, "Nowy rodzaj priorytetu..."))).toMutableList()
         val prioritySpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
         prioritySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -141,7 +151,6 @@ class TaskEditActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {} // Do nothing
         }
 
-        val taskListSpinner = binding.taskListPicker
         val taskLists = taskListDao.getAll()
         val taskListSpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, taskLists)
         taskListSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -168,7 +177,9 @@ class TaskEditActivity : AppCompatActivity() {
                 else -> R.color.task_tab_color_gray
             }
 
-            val taskToAdd = Task(0, taskName, taskListId, priorityId, categoryId, isDone, getColor(colorChosen), null)
+            val term = taskDeadlineCalendar.time
+
+            val taskToAdd = Task(0, taskName, taskListId, priorityId, categoryId, isDone, getColor(colorChosen), term)
 
             taskDao.insert(taskToAdd)
 
@@ -176,13 +187,28 @@ class TaskEditActivity : AppCompatActivity() {
 
         }
 
-        datePickerInput = binding.taskDateInput
+        taskDeadlineCalendar = Calendar.getInstance()
+//        taskDeadlineCalendar.time = Date()
+        taskDeadlineCalendar.add(Calendar.DAY_OF_MONTH, 1)
+        taskDeadlineCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        taskDeadlineCalendar.set(Calendar.MINUTE, 0)
+        taskDeadlineCalendar.set(Calendar.SECOND, 0)
+        taskDeadlineCalendar.set(Calendar.MILLISECOND, 0)
+
+        datePickerInput.setText(
+                    taskDeadlineCalendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
+                            (taskDeadlineCalendar.get(Calendar.MONTH)+1).toString() + "." +
+                    taskDeadlineCalendar.get(Calendar.YEAR).toString()
+        )
+        timePickerInput.setText("00:00")
+
+//        taskDeadline = midnightOfTheNextDay.time
+
         datePickerInput.inputType = InputType.TYPE_NULL
         datePickerInput.setOnClickListener {
             DatePickerFragment().show(supportFragmentManager, "datePicker")
         }
 
-        timePickerInput = binding.taskTimeInput
         timePickerInput.inputType = InputType.TYPE_NULL
         timePickerInput.setOnClickListener {
             TimePickerFragment().show(supportFragmentManager, "timePicker")
@@ -205,8 +231,11 @@ class TaskEditActivity : AppCompatActivity() {
         }
 
         override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-            val listener = activity as? TaskEditActivity
-            listener?.datePickerInput?.setText(day.toString() + "." + (month + 1) + "." + year)
+            val listener = requireActivity() as TaskEditActivity
+            listener.taskDeadlineCalendar.set(Calendar.YEAR, year)
+            listener.taskDeadlineCalendar.set(Calendar.MONTH, month)
+            listener.taskDeadlineCalendar.set(Calendar.DAY_OF_MONTH, day)
+            listener.datePickerInput.setText(day.toString() + "." + (month + 1) + "." + year)
         }
     }
 
@@ -224,10 +253,11 @@ class TaskEditActivity : AppCompatActivity() {
         }
 
         override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-            val listener = activity as? TaskEditActivity
-            listener?.timePickerInput?.setText("$hourOfDay:$minute")
+            val listener = requireActivity() as TaskEditActivity
+            listener.taskDeadlineCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            listener.taskDeadlineCalendar.set(Calendar.MINUTE, minute)
+            listener.timePickerInput.setText(String.format("%02d:%02d", hourOfDay, minute))
         }
     }
-
 
 }
