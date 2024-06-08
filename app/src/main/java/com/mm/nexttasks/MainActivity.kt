@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mm.nexttasks.databinding.ActivityMainBinding
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskListDao
-import com.mm.nexttasks.ui.home.HomeFragment
+import com.mm.nexttasks.ui.taskList.TaskListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = "Wszystkie listy zadań"
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment_content_main, HomeFragment(null))
+            .replace(R.id.nav_host_fragment_content_main, TaskListFragment(null))
             .commit()
 
         // Set up the click listener for the navigation drawer items
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
             // Update the fragment with the selected item's information
             supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, HomeFragment(taskList))
+                .replace(R.id.nav_host_fragment_content_main, TaskListFragment(taskList))
                 .commit()
 
             drawerLayout.close()

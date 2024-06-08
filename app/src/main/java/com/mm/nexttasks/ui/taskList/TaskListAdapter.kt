@@ -1,10 +1,12 @@
-package com.mm.nexttasks
+package com.mm.nexttasks.ui.taskList
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mm.nexttasks.MainApp
+import com.mm.nexttasks.R
 import com.mm.nexttasks.databinding.TaskCardBinding
 import com.mm.nexttasks.db.views.TaskDetails
 
@@ -32,6 +34,20 @@ class TaskListAdapter(private val context: Context, private val taskList: ArrayL
 
     override fun getItemCount(): Int {
         return taskList.size
+    }
+
+    fun getTaskList(): ArrayList<TaskDetails> {
+        return taskList
+    }
+
+    fun removeAt(position: Int) {
+        taskList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun insertAt(position: Int, task: TaskDetails) {
+        taskList.add(position, task)
+        notifyItemInserted(position)
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
