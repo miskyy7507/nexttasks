@@ -6,44 +6,74 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mm.nexttasks.MainApp
 import com.mm.nexttasks.R
 import com.mm.nexttasks.databinding.TaskCardBinding
+import com.mm.nexttasks.databinding.TaskListSeparatorItemBinding
 import com.mm.nexttasks.db.views.TaskDetails
 import java.text.DateFormat
 import java.util.Locale
 
-class TaskListAdapter(private val context: Context, private val taskList: ArrayList<TaskDetails>)
-    : RecyclerView.Adapter<TaskListAdapter.MyViewHolder>() {
+private const val VIEW_TYPE_ITEM = 1
+private const val VIEW_TYPE_SEPARATOR = 2
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : MyViewHolder {
+class TaskListAdapter(private val context: Context, private val taskList: ArrayList<TaskListItem>)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : RecyclerView.ViewHolder {
         // this is where you inflate the layout
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.task_card, parent, false)
-
-        return MyViewHolder(view)
+//        val inflater = LayoutInflater.from(context)
+//        val view = inflater.inflate(R.layout.task_card, parent, false)
+//
+//        return TaskCardViewHolder(view)
+        return when (viewType) {
+            VIEW_TYPE_ITEM -> {
+                val inflater = LayoutInflater.from(context)
+                val view = inflater.inflate(R.layout.task_card, parent, false)
+                TaskCardViewHolder(view)
+            }
+            VIEW_TYPE_SEPARATOR -> {
+                val inflater = LayoutInflater.from(context)
+                val view = inflater.inflate(R.layout.task_list_separator_item, parent, false)
+                TaskListSeparatorViewHolder(view)
+            }
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         // assigning values to the views we created in the task_card layout file
         // based on the position of the recycler view
+        when (holder) {
+            is TaskCardViewHolder -> {
+                val taskItem = taskList[position] as TaskListItem.TaskCardItem
+                holder.binding.taskLabel.text = taskItem.taskDetails.title
+                if (taskItem.taskDetails.categoryName == null) {
+                    holder.binding.separator2.visibility = View.GONE
+                }
+                holder.binding.taskCategory.text = taskItem.taskDetails.categoryName
+                holder.binding.taskList.text = context.getString(R.string.task_name_view_template, taskItem.taskDetails.taskListName)
+                holder.binding.taskDeadlineText.text = taskItem.taskDetails.toString()
+                holder.binding.taskLabel.isChecked = taskItem.taskDetails.isDone
+                holder.binding.taskCardColor.setBackgroundColor(taskItem.taskDetails.cardColor ?: 2131100398)
 
-        holder.binding.taskLabel.text = taskList[position].title
-        holder.binding.taskCategory.text = taskList[position].categoryName
-        holder.binding.taskDeadlineText.text = taskList[position].term.toString()
-        holder.binding.taskLabel.isChecked = taskList[position].isDone
-        holder.binding.taskCardColor.setBackgroundColor(taskList[position].cardColor ?: 2131100398)
 
-        val taskTerm = taskList[position].term
-        if (taskTerm == null) {
-            holder.binding.taskDeadlineLine.visibility = View.GONE
-        } else {
-            @SuppressLint("SetTextI18n")
-            holder.binding.taskDeadlineText.text = (
-                    DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault(Locale.Category.FORMAT)).format(taskTerm)
-                    + ", "
-                    + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault(Locale.Category.FORMAT)).format(taskTerm)
+                val taskTerm = taskItem.taskDetails.term
+                if (taskTerm == null) {
+                    holder.binding.taskDeadlineLine.visibility = View.GONE
+                } else {
+                    holder.binding.taskDeadlineText.text = (
+                        context.getString(
+                            R.string.date_and_time_task_list_template,
+                            DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault(Locale.Category.FORMAT)).format(taskTerm),
+                            DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault(Locale.Category.FORMAT)).format(taskTerm)
+                        )
                     )
+                }
+            }
+            is TaskListSeparatorViewHolder -> {
+                val separatorItem = taskList[position] as TaskListItem.TaskListSeparatorItem
+                holder.binding.textView4.text = separatorItem.text
+            }
         }
     }
 
@@ -51,7 +81,14 @@ class TaskListAdapter(private val context: Context, private val taskList: ArrayL
         return taskList.size
     }
 
-    fun getTaskList(): ArrayList<TaskDetails> {
+    override fun getItemViewType(position: Int): Int {
+        return when (taskList[position]) {
+            is TaskListItem.TaskCardItem -> VIEW_TYPE_ITEM
+            is TaskListItem.TaskListSeparatorItem -> VIEW_TYPE_SEPARATOR
+        }
+    }
+
+    fun getTaskList(): ArrayList<TaskListItem> {
         return taskList
     }
 
@@ -60,12 +97,16 @@ class TaskListAdapter(private val context: Context, private val taskList: ArrayL
         notifyItemRemoved(position)
     }
 
-    fun insertAt(position: Int, task: TaskDetails) {
-        taskList.add(position, task)
+    fun insertAt(position: Int, item: TaskListItem) {
+        taskList.add(position, item)
         notifyItemInserted(position)
     }
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TaskCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = TaskCardBinding.bind(itemView)
+    }
+
+    class TaskListSeparatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = TaskListSeparatorItemBinding.bind(itemView)
     }
 }

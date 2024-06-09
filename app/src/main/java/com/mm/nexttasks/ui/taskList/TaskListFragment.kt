@@ -18,8 +18,13 @@ import com.mm.nexttasks.databinding.FragmentHomeBinding
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskDao
 import com.mm.nexttasks.db.views.TaskDetails
+import java.text.DateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
-
+private const val VIEW_TYPE_ITEM = 1
+private const val VIEW_TYPE_SEPARATOR = 2
 class TaskListFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -32,7 +37,7 @@ class TaskListFragment : Fragment() {
     private val database get() = _database!!
     private var taskDao: TaskDao? = null
 
-    private val taskModels: ArrayList<TaskDetails> = ArrayList()
+    private val taskModels: ArrayList<TaskListItem> = ArrayList()
 
     companion object {
          fun newInstance(selectedTaskName: String?): TaskListFragment {
@@ -67,12 +72,26 @@ class TaskListFragment : Fragment() {
         val swipeHandler = object : SwipeCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val taskToRemove = adapter.getTaskList()[position]
+                val taskToRemove = adapter.getTaskList()[position] as TaskListItem.TaskCardItem
+                val separatorItem = if (
+                    adapter.getItemViewType(position - 1) == VIEW_TYPE_SEPARATOR &&
+                    (adapter.itemCount == position + 1 ||
+                    adapter.getItemViewType(position + 1) == VIEW_TYPE_SEPARATOR)
+                ) {
+                    // consider removing the separator if deleted item is the only one in the group
+                    adapter.getTaskList()[position - 1] as TaskListItem.TaskListSeparatorItem
+                } else null
 
                 adapter.removeAt(position)
+                if (separatorItem != null) {
+                    adapter.removeAt(position - 1)
+                }
 
                 Snackbar.make(requireView(), getText(R.string.task_deleted_info), Snackbar.LENGTH_LONG)
                     .setAction(getText(R.string.undo)) {
+                        if (separatorItem != null) {
+                            adapter.insertAt(position - 1, separatorItem)
+                        }
                         adapter.insertAt(position, taskToRemove)
                         recyclerView.scrollToPosition(position)
                     }
@@ -83,11 +102,11 @@ class TaskListFragment : Fragment() {
                                 BaseCallback.DISMISS_EVENT_SWIPE, BaseCallback.DISMISS_EVENT_TIMEOUT,
                                 BaseCallback.DISMISS_EVENT_MANUAL, BaseCallback.DISMISS_EVENT_CONSECUTIVE -> {
                                     // remove task from database only when snackbar with undo button is gone
-                                    taskDao!!.delete(taskDao!!.getTaskFromId(taskToRemove.taskId))
+                                    taskDao!!.delete(taskDao!!.getTaskFromId(taskToRemove.taskDetails.taskId))
                                 }
 
                                 BaseCallback.DISMISS_EVENT_ACTION -> {
-                                    // "undo" button pressed, so do nothing
+                                    // action button (the "undo" button here) has been pressed, so do nothing
                                 }
                             }
                         }
@@ -108,17 +127,29 @@ class TaskListFragment : Fragment() {
     }
 
     private fun setUpTaskListModels(selectedItemName: String?) {
-        val tasks: List<TaskDetails>?
-        if (selectedItemName != null) {
-            tasks = taskDao!!.getTasksFromList(selectedItemName)
+        val tasks = if (selectedItemName != null) {
+            taskDao!!.getTasksFromList(selectedItemName)
         } else {
-            tasks = taskDao!!.getAll()
+            taskDao!!.getAll()
         }
+        val tasksDateSorted = tasks.sortedBy { it.term }
         if (tasks.isNotEmpty()) {
             binding.noTasksTip.visibility = View.GONE
         }
-        for (task in tasks) {
-            taskModels.add(task)
+        var lastTaskDate = Calendar.getInstance()
+        lastTaskDate.time = Date(0)
+        for (task in tasksDateSorted) {
+            var currentTaskDate = Calendar.getInstance()
+            currentTaskDate.time = task.term!!
+            if (!(
+                currentTaskDate.get(Calendar.YEAR) == lastTaskDate.get(Calendar.YEAR) &&
+                currentTaskDate.get(Calendar.MONTH) == lastTaskDate.get(Calendar.MONTH) &&
+                currentTaskDate.get(Calendar.DAY_OF_MONTH) == lastTaskDate.get(Calendar.DAY_OF_MONTH)
+            )) {
+                taskModels.add(TaskListItem.TaskListSeparatorItem(DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault(Locale.Category.FORMAT)).format(currentTaskDate.time)))
+            }
+            lastTaskDate.time = currentTaskDate.time
+            taskModels.add(TaskListItem.TaskCardItem(task))
         }
     }
 }

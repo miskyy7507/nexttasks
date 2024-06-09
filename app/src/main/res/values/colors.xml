@@ -11,7 +11,7 @@
     <color name="app_theme_color">#FF453191</color>
     <color name="app_theme_color_darker">#FF312368</color>
 
-    <color name="gray_secondary_text">#FFAAAAAA</color>
+    <color name="gray_secondary_text">#FF777777</color>
 
     <color name="task_tab_color_red">#FFFF5954</color>
     <color name="task_tab_color_yellow">#FFFFDD52</color>

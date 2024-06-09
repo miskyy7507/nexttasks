@@ -1,6 +1,5 @@
 package com.mm.nexttasks.ui.taskList
 
-import com.mm.nexttasks.R
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -10,19 +9,23 @@ import android.graphics.drawable.ColorDrawable
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.mm.nexttasks.R
+
+private const val VIEW_TYPE_ITEM = 1
+private const val VIEW_TYPE_SEPARATOR = 2
 
 abstract class SwipeCallback(context: Context): ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-    private val deleteIcon = ContextCompat.getDrawable(context, R.drawable.recycle_bin_24)!!
+    private val mContext: Context = context
+    private val deleteIcon = ContextCompat.getDrawable(mContext, R.drawable.recycle_bin_24)!!
     private val background = ColorDrawable()
-    private val backgroundColor = ContextCompat.getColor(context, R.color.danger)
+    private val backgroundColor = ContextCompat.getColor(mContext, R.color.danger)
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-//         To disable "swipe" for specific item, return 0 here. For example:
-//         if (viewHolder?.itemViewType == YourAdapter.SOME_TYPE) return 0
+        if (viewHolder.itemViewType == VIEW_TYPE_SEPARATOR) return 0
         return super.getMovementFlags(recyclerView, viewHolder)
     }
 
@@ -44,6 +47,7 @@ abstract class SwipeCallback(context: Context): ItemTouchHelper.SimpleCallback(0
         isCurrentlyActive: Boolean
     ) {
         val itemView = viewHolder.itemView
+        val itemViewHeightNoMargin = itemView.height - dpToPixel(17.0f).toInt()
 
         val isCanceled = dX == 0f && !isCurrentlyActive
         if (isCanceled) {
@@ -57,12 +61,12 @@ abstract class SwipeCallback(context: Context): ItemTouchHelper.SimpleCallback(0
             itemView.right + dX.toInt(),
             itemView.top,
             itemView.right,
-            itemView.bottom
+            itemView.bottom - dpToPixel(17.0f).toInt()
         )
         background.draw(c)
 
-        val iconTop = itemView.top + (itemView.height - deleteIcon.intrinsicHeight) / 2
-        val iconMargin = (itemView.height - deleteIcon.intrinsicHeight) / 2
+        val iconTop = itemView.top + (itemViewHeightNoMargin - deleteIcon.intrinsicHeight) / 2
+        val iconMargin = (itemViewHeightNoMargin - deleteIcon.intrinsicHeight) / 2
         val iconLeft = itemView.right - iconMargin - deleteIcon.intrinsicWidth
         val iconRight = itemView.right - iconMargin
         val iconBottom = iconTop + deleteIcon.intrinsicHeight
@@ -75,5 +79,11 @@ abstract class SwipeCallback(context: Context): ItemTouchHelper.SimpleCallback(0
 
     private fun clearCanvas(c: Canvas?, left: Float, top: Float, right: Float, bottom: Float) {
         c?.drawRect(left, top, right, bottom, clearPaint)
+    }
+
+    private fun dpToPixel(dp: Float): Float {
+        val metrics = mContext.resources.displayMetrics
+        val px = dp * (metrics.densityDpi / 160f)
+        return px
     }
 }
