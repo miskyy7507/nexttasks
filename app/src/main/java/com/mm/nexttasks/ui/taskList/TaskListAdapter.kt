@@ -1,5 +1,6 @@
 package com.mm.nexttasks.ui.taskList
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,8 @@ import com.mm.nexttasks.MainApp
 import com.mm.nexttasks.R
 import com.mm.nexttasks.databinding.TaskCardBinding
 import com.mm.nexttasks.db.views.TaskDetails
+import java.text.DateFormat
+import java.util.Locale
 
 class TaskListAdapter(private val context: Context, private val taskList: ArrayList<TaskDetails>)
     : RecyclerView.Adapter<TaskListAdapter.MyViewHolder>() {
@@ -30,6 +33,18 @@ class TaskListAdapter(private val context: Context, private val taskList: ArrayL
         holder.binding.taskDeadlineText.text = taskList[position].term.toString()
         holder.binding.taskLabel.isChecked = taskList[position].isDone
         holder.binding.taskCardColor.setBackgroundColor(taskList[position].cardColor ?: 2131100398)
+
+        val taskTerm = taskList[position].term
+        if (taskTerm == null) {
+            holder.binding.taskDeadlineLine.visibility = View.GONE
+        } else {
+            @SuppressLint("SetTextI18n")
+            holder.binding.taskDeadlineText.text = (
+                    DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault(Locale.Category.FORMAT)).format(taskTerm)
+                    + ", "
+                    + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault(Locale.Category.FORMAT)).format(taskTerm)
+                    )
+        }
     }
 
     override fun getItemCount(): Int {
