@@ -56,7 +56,7 @@ class TaskListFragment : Fragment() {
         _database = MainApp.database!!
         taskDao = database.taskDao()
 
-        val selectedItemName = if (arguments != null) arguments!!.getString("selectedTaskName", null) else null
+        val selectedItemName = if (arguments != null) requireArguments().getString("selectedTaskName", null) else null
 
         setUpTaskListModels(selectedItemName)
         
@@ -71,7 +71,7 @@ class TaskListFragment : Fragment() {
 
                 adapter.removeAt(position)
 
-                Snackbar.make(requireView(), getText(R.string.task_added_info), Snackbar.LENGTH_LONG)
+                Snackbar.make(requireView(), getText(R.string.task_deleted_info), Snackbar.LENGTH_LONG)
                     .setAction(getText(R.string.undo)) {
                         adapter.insertAt(position, taskToRemove)
                         recyclerView.scrollToPosition(position)
