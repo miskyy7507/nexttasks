@@ -55,14 +55,16 @@ class MainActivity : AppCompatActivity() {
 
         val taskListsList = taskListDao!!.getAll()
 
-        val allTaskListsMenuItem = navView.menu.add(getText(R.string.task_list_show_all))
+        val allTaskListsMenuItem = navView.menu.add(Menu.FIRST, 0, Menu.NONE, getText(R.string.task_list_show_all))
         for (list in taskListsList) {
-            navView.menu.add(list.name)
+            navView.menu.add(Menu.FIRST, list.taskListId.toInt(), Menu.NONE, list.name)
         }
+        navView.menu.setGroupCheckable(Menu.FIRST, true, true)
+        allTaskListsMenuItem.setChecked(true)
         supportActionBar?.title = getText(R.string.task_list_show_all)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment_content_main, TaskListFragment(null))
+            .replace(R.id.nav_host_fragment_content_main, TaskListFragment())
             .commit()
 
         // Set up the click listener for the navigation drawer items
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
             // Update the fragment with the selected item's information
             supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, TaskListFragment(taskList))
+                .replace(R.id.nav_host_fragment_content_main, TaskListFragment.newInstance(taskList))
                 .commit()
 
             drawerLayout.close()

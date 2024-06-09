@@ -20,7 +20,7 @@ import com.mm.nexttasks.db.dao.TaskDao
 import com.mm.nexttasks.db.views.TaskDetails
 
 
-class TaskListFragment(selectedItemNames: String?) : Fragment() {
+class TaskListFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -34,8 +34,15 @@ class TaskListFragment(selectedItemNames: String?) : Fragment() {
 
     private val taskModels: ArrayList<TaskDetails> = ArrayList()
 
-    private val selectedItemName = selectedItemNames
-
+    companion object {
+         fun newInstance(selectedTaskName: String?): TaskListFragment {
+            val fragment = TaskListFragment()
+            val b = Bundle()
+            b.putString("selectedTaskName", selectedTaskName)
+            fragment.arguments = b
+            return fragment
+        }
+    }
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -46,9 +53,10 @@ class TaskListFragment(selectedItemNames: String?) : Fragment() {
 
         val recyclerView = binding.todoList
 
-
         _database = MainApp.database!!
         taskDao = database.taskDao()
+
+        val selectedItemName = if (arguments != null) arguments!!.getString("selectedTaskName", null) else null
 
         setUpTaskListModels(selectedItemName)
         
