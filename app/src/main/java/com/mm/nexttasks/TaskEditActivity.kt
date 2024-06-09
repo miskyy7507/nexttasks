@@ -165,6 +165,7 @@ class TaskEditActivity : AppCompatActivity() {
         taskListSpinner.adapter = taskListSpinnerAdapter
 
         binding.addButton.setOnClickListener {
+            binding.addButton.isClickable = false
             val taskName = titleInput.text?.trim().toString()
             val taskListId = taskListSpinnerAdapter.getItem(taskListSpinner.selectedItemPosition)!!.taskListId
             var priorityId: Long? = prioritySpinnerAdapter.getItem(prioritySpinner.selectedItemPosition)!!.priorityId
@@ -191,7 +192,8 @@ class TaskEditActivity : AppCompatActivity() {
 
             taskDao.insert(taskToAdd)
 
-            Toast.makeText(this, getText(R.string.task_added_info), Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, getText(R.string.task_added_info), Toast.LENGTH_SHORT).show()
+            onSupportNavigateUp()
         }
 
         taskDeadlineCalendar = Calendar.getInstance()
