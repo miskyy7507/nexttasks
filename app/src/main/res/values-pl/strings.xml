@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigation_drawer_open">Otwórz menu boczne</string>
+    <string name="navigation_drawer_close">Zamknij menu boczne</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="nav_header_subtitle">Aplikacja dla zarządzania zadaniami</string>
+    <string name="nav_header_desc">Nagłówek menu bocznego</string>
+    <string name="default_task_list_main">Główna lista zadań</string>
+    <string name="task_list_show_all">Wszystkie listy zadań</string>
+    <string name="none">Brak</string>
+    <string name="new_category_item">Nowa kategoria...</string>
+    <string name="new_category_add_dialog">Dodaj nową kategorie</string>
+    <string name="add">Dodaj</string>
+    <string name="cancel">Anuluj</string>
+    <string name="undo">Cofnij</string>
+    <string name="new_priority_item">Nowy priorytet...</string>
+    <string name="new_priority_add_dialog">Dodaj nowy priorytet</string>
+    <string name="task_added_info">Dodano nowe zadanie</string>
+    <string name="task_deleted_info">Usunięto zadanie</string>
+    <string name="done">Wykonano</string>
+    <string name="color">Kolor</string>
+    <string name="color_picker_red">Czerwony</string>
+    <string name="color_picker_yellow">Żółty</string>
+    <string name="color_picker_green">Zielony</string>
+    <string name="color_picker_blue">Niebieski</string>
+    <string name="date">Data</string>
+    <string name="time">Godzina</string>
+    <string name="name">Nazwa</string>
+    <string name="no_tasks_tip1">Brak zadań</string>
+    <string name="no_tasks_tip2">Kliknij + aby dodać pierwsze zadanie.</string>
+</resources>

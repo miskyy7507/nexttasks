@@ -22,7 +22,7 @@
             android:layout_marginTop="20dp"
             android:autofillHints=""
             android:ems="10"
-            android:hint="Zadanie"
+            android:hint="@string/name"
             android:inputType="text"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Wykonano"
+            android:text="@string/done"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Kolor"
+            android:text="@string/color"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +80,7 @@
                 android:buttonTint="@color/task_tab_color_gray"
                 android:buttonTintMode="multiply"
                 android:checked="true"
-                android:contentDescription="Brak" />
+                android:contentDescription="@string/none" />
 
             <RadioButton
                 android:id="@+id/colorRedChoice"
@@ -89,7 +89,7 @@
                 android:button="@drawable/color_chooser_radio_btn"
                 android:buttonTint="@color/task_tab_color_red"
                 android:buttonTintMode="multiply"
-                android:contentDescription="Czerwony" />
+                android:contentDescription="@string/color_picker_red" />
 
             <RadioButton
                 android:id="@+id/colorYellowChoice"
@@ -98,7 +98,7 @@
                 android:button="@drawable/color_chooser_radio_btn"
                 android:buttonTint="@color/task_tab_color_yellow"
                 android:buttonTintMode="multiply"
-                android:contentDescription="Żółty" />
+                android:contentDescription="@string/color_picker_yellow" />
 
             <RadioButton
                 android:id="@+id/colorGreenChoice"
@@ -107,7 +107,7 @@
                 android:button="@drawable/color_chooser_radio_btn"
                 android:buttonTint="@color/task_tab_color_green"
                 android:buttonTintMode="multiply"
-                android:contentDescription="Zielony" />
+                android:contentDescription="@string/color_picker_green" />
 
             <RadioButton
                 android:id="@+id/colorBlueChoice"
@@ -116,7 +116,7 @@
                 android:button="@drawable/color_chooser_radio_btn"
                 android:buttonTint="@color/task_tab_color_blue"
                 android:buttonTintMode="multiply"
-                android:contentDescription="Niebieski" />
+                android:contentDescription="@string/color_picker_blue" />
 
         </RadioGroup>
 
@@ -169,7 +169,7 @@
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="Data"
+                android:hint="@string/date"
                 android:clickable="false"
                 android:inputType="none"
                 android:textSize="20sp">
@@ -194,7 +194,7 @@
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="Godzina"
+                android:hint="@string/time"
                 android:clickable="false"
                 android:inputType="none"
                 android:textSize="20sp">
@@ -216,7 +216,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="24dp"
-            android:text="Dodaj"
+            android:text="@string/add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

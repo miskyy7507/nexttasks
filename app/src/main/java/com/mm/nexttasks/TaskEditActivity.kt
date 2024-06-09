@@ -62,7 +62,11 @@ class TaskEditActivity : AppCompatActivity() {
         prioritySpinner = binding.taskPrioritySpinner
         taskListSpinner = binding.taskListPicker
 
-        val categories = (listOf(Category(0, "Brak")) + categoryDao.getAll() + listOf(Category(-1, "Nowa kategoria..."))).toMutableList()
+        val categories = (
+                listOf(Category(0, getText(R.string.none).toString()))
+                    + categoryDao.getAll()
+                    + listOf(Category(-1, getText(R.string.new_category_item).toString()))
+                ).toMutableList()
         val categorySpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = categorySpinnerAdapter
@@ -78,14 +82,14 @@ class TaskEditActivity : AppCompatActivity() {
             ) {
                 if (position == categories.size -1) { // last item is the "New..." item
                     categorySpinner.setSelection(categorySpinnerPosition)
-                    val builder = AlertDialog.Builder(binding.root.context)
-                    builder.setTitle("Dodaj nową kategorie")
+                    val alertDialog = AlertDialog.Builder(binding.root.context)
+                    alertDialog.setTitle(getText(R.string.new_category_add_dialog))
 
                     val input = EditText(binding.root.context)
                     input.inputType = InputType.TYPE_CLASS_TEXT
-                    builder.setView(input)
+                    alertDialog.setView(input)
 
-                    builder.setPositiveButton("Dodaj") { dialog, _ ->
+                    alertDialog.setPositiveButton(getText(R.string.add)) { dialog, _ ->
                         val newItem = input.text.toString()
                         if (newItem.isNotBlank()) {
                             val newlyInsertedCategoryId = categoryDao.insert(Category(0, newItem))
@@ -96,9 +100,9 @@ class TaskEditActivity : AppCompatActivity() {
                         }
                     }
 
-                    builder.setNegativeButton("Anuluj") { dialog, _ -> dialog.cancel() }
+                    alertDialog.setNegativeButton(getText(R.string.cancel)) { dialog, _ -> dialog.cancel() }
 
-                    builder.show()
+                    alertDialog.show()
                 } else {
                     categorySpinnerPosition = categorySpinner.selectedItemPosition
                 }
@@ -107,7 +111,11 @@ class TaskEditActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {} // Do nothing
         }
 
-        val priorities = (listOf(Priority(0, "Brak priorytetu")) + priorityDao.getAll() + listOf(Priority(-1, "Nowy rodzaj priorytetu..."))).toMutableList()
+        val priorities = (
+                listOf(Priority(0, getText(R.string.none).toString()))
+                    + priorityDao.getAll()
+                    + listOf(Priority(-1, getText(R.string.new_priority_item).toString()))
+                ).toMutableList()
         val prioritySpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
         prioritySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         prioritySpinner.adapter = prioritySpinnerAdapter
@@ -123,14 +131,14 @@ class TaskEditActivity : AppCompatActivity() {
             ) {
                 if (position == priorities.size -1) { // last item is the "New..." item
                     prioritySpinner.setSelection(prioritySpinnerPosition)
-                    val builder = AlertDialog.Builder(binding.root.context)
-                    builder.setTitle("Dodaj nowy rodzaj priorytetu")
+                    val alertDialog = AlertDialog.Builder(binding.root.context)
+                    alertDialog.setTitle(getText(R.string.new_category_add_dialog))
 
                     val input = EditText(binding.root.context)
                     input.inputType = InputType.TYPE_CLASS_TEXT
-                    builder.setView(input)
+                    alertDialog.setView(input)
 
-                    builder.setPositiveButton("Dodaj") { dialog, _ ->
+                    alertDialog.setPositiveButton(getText(R.string.add)) { dialog, _ ->
                         val newItem = input.text.toString()
                         if (newItem.isNotBlank()) {
                             val newlyInsertedPriorityId = priorityDao.insert(Priority(0, newItem))
@@ -140,9 +148,9 @@ class TaskEditActivity : AppCompatActivity() {
                         }
                     }
 
-                    builder.setNegativeButton("Anuluj") { dialog, _ -> dialog.cancel() }
+                    alertDialog.setNegativeButton(getText(R.string.cancel)) { dialog, _ -> dialog.cancel() }
 
-                    builder.show()
+                    alertDialog.show()
                 } else {
                     prioritySpinnerPosition = prioritySpinner.selectedItemPosition
                 }
@@ -183,8 +191,7 @@ class TaskEditActivity : AppCompatActivity() {
 
             taskDao.insert(taskToAdd)
 
-            Toast.makeText(this, "Added new task", Toast.LENGTH_LONG).show()
-
+            Toast.makeText(this, getText(R.string.task_added_info), Toast.LENGTH_SHORT).show()
         }
 
         taskDeadlineCalendar = Calendar.getInstance()

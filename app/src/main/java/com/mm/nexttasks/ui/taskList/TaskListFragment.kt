@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback
 import com.mm.nexttasks.MainApp
+import com.mm.nexttasks.R
 import com.mm.nexttasks.databinding.FragmentHomeBinding
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskDao
@@ -62,8 +63,8 @@ class TaskListFragment(selectedItemNames: String?) : Fragment() {
 
                 adapter.removeAt(position)
 
-                Snackbar.make(requireView(), "Zadanie usunięte", Snackbar.LENGTH_LONG)
-                    .setAction("Cofnij") {
+                Snackbar.make(requireView(), getText(R.string.task_added_info), Snackbar.LENGTH_LONG)
+                    .setAction(getText(R.string.undo)) {
                         adapter.insertAt(position, taskToRemove)
                         recyclerView.scrollToPosition(position)
                     }

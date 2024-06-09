@@ -1,15 +1,12 @@
 <resources>
-    <string name="app_name">NextTasks</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="app_name" translatable="false">NextTasks</string>
+    <string name="navigation_drawer_open">Open side menu</string>
+    <string name="navigation_drawer_close">Close side menu</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="nav_header_title" translatable="false">NextTasks</string>
+    <string name="nav_header_subtitle">Apps for task management</string>
+    <string name="nav_header_desc">Side menu header</string>
 
     <string-array name="task_names">
         <item>Wyrzucić śmieci</item>
@@ -40,4 +37,27 @@
         <item>Do końca dnia</item>
         <item>Do końca dnia</item>
     </string-array>
+    <string name="default_task_list_main">Main task list</string>
+    <string name="task_list_show_all">All task lists</string>
+    <string name="none">None</string>
+    <string name="new_category_item">New category...</string>
+    <string name="new_category_add_dialog">Add new category</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="undo">Undo</string>
+    <string name="new_priority_item">New priority...</string>
+    <string name="new_priority_add_dialog">Add new priority</string>
+    <string name="task_added_info">Added new task</string>
+    <string name="task_deleted_info">Task deleted</string>
+    <string name="done">Done</string>
+    <string name="color">Colour</string>
+    <string name="color_picker_red">Red</string>
+    <string name="color_picker_yellow">Yellow</string>
+    <string name="color_picker_green">Green</string>
+    <string name="color_picker_blue">Blue</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="name">Name</string>
+    <string name="no_tasks_tip1">No tasks</string>
+    <string name="no_tasks_tip2">Click + to add the first task.</string>
 </resources>

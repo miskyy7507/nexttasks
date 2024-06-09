@@ -55,11 +55,11 @@ class MainActivity : AppCompatActivity() {
 
         val taskListsList = taskListDao!!.getAll()
 
-        navView.menu.add("Wszystkie listy zadań")
+        val allTaskListsMenuItem = navView.menu.add(getText(R.string.task_list_show_all))
         for (list in taskListsList) {
             navView.menu.add(list.name)
         }
-        supportActionBar?.title = "Wszystkie listy zadań"
+        supportActionBar?.title = getText(R.string.task_list_show_all)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.nav_host_fragment_content_main, TaskListFragment(null))
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             // Get the selected item from the database
             val selectedItem = menuItem.title.toString()
             supportActionBar?.title = selectedItem
-            val taskList = if (selectedItem == "Wszystkie listy zadań") {null} else selectedItem
+            val taskList = if (menuItem.itemId == allTaskListsMenuItem.itemId) {null} else selectedItem
 
             // Update the fragment with the selected item's information
             supportFragmentManager.beginTransaction()
