@@ -63,4 +63,8 @@
     <string name="text_line_separator" translatable="false">·</string>
     <string name="task_name_view_template" translatable="false">[%1$s]</string>
     <string name="date_and_time_task_list_template" translatable="false">%1$s, %2$s</string>
+    <string name="calendar_view">Calendar View</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="task_list_view">Task list view</string>
 </resources>

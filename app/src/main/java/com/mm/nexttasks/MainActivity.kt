@@ -3,6 +3,7 @@ package com.mm.nexttasks
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mm.nexttasks.databinding.ActivityMainBinding
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskListDao
+import com.mm.nexttasks.ui.calendar.CalendarFragment
 import com.mm.nexttasks.ui.taskList.TaskListFragment
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +25,9 @@ class MainActivity : AppCompatActivity() {
     private var _database: AppDatabase? = null
     private val database get() = _database!!
     private var taskListDao: TaskListDao? = null
+
+    private var calendarViewToggle = false
+    private var savedTaskList: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = getText(R.string.task_list_show_all)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment_content_main, TaskListFragment())
+            .replace(R.id.nav_host_fragment_content_main, TaskListFragment.newInstance(savedTaskList))
             .commit()
 
         // Set up the click listener for the navigation drawer items
@@ -72,11 +77,11 @@ class MainActivity : AppCompatActivity() {
             // Get the selected item from the database
             val selectedItem = menuItem.title.toString()
             supportActionBar?.title = selectedItem
-            val taskList = if (menuItem.itemId == allTaskListsMenuItem.itemId) {null} else selectedItem
+            savedTaskList = if (menuItem.itemId == allTaskListsMenuItem.itemId) {null} else selectedItem
 
             // Update the fragment with the selected item's information
             supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, TaskListFragment.newInstance(taskList))
+                .replace(R.id.nav_host_fragment_content_main, TaskListFragment.newInstance(savedTaskList))
                 .commit()
 
             drawerLayout.close()
@@ -95,6 +100,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId != R.id.action_calendar_view_toggle) {
+            return super.onOptionsItemSelected(item)
+        }
+
+        calendarViewToggle = !calendarViewToggle
+        if (calendarViewToggle) {
+            item.icon = getDrawable(R.drawable.checklist_40dp)
+            item.title = getText(R.string.task_list_view)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, CalendarFragment())
+                .commit()
+        } else {
+            item.icon = getDrawable(R.drawable.calendar_month_40dp)
+            item.title = getText(R.string.calendar_view)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, TaskListFragment.newInstance(savedTaskList))
+                .commit()
+        }
+
         return true
     }
 
