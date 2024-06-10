@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
 import com.mm.nexttasks.db.entities.*
 import java.util.Calendar
+import java.util.Locale
 
 class TaskEditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTaskEditBinding
@@ -204,12 +205,12 @@ class TaskEditActivity : AppCompatActivity() {
         taskDeadlineCalendar.set(Calendar.SECOND, 0)
         taskDeadlineCalendar.set(Calendar.MILLISECOND, 0)
 
-        datePickerInput.setText(
-                    taskDeadlineCalendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
-                            (taskDeadlineCalendar.get(Calendar.MONTH)+1).toString() + "." +
-                    taskDeadlineCalendar.get(Calendar.YEAR).toString()
-        )
-        timePickerInput.setText("00:00")
+        datePickerInput.setText(java.text.DateFormat.getDateInstance(
+            java.text.DateFormat.SHORT, Locale.getDefault(
+                Locale.Category.FORMAT)).format(taskDeadlineCalendar.time))
+        timePickerInput.setText(java.text.DateFormat.getTimeInstance(
+            java.text.DateFormat.SHORT, Locale.getDefault(
+                Locale.Category.FORMAT)).format(taskDeadlineCalendar.time))
 
 //        taskDeadline = midnightOfTheNextDay.time
 
@@ -244,7 +245,10 @@ class TaskEditActivity : AppCompatActivity() {
             listener.taskDeadlineCalendar.set(Calendar.YEAR, year)
             listener.taskDeadlineCalendar.set(Calendar.MONTH, month)
             listener.taskDeadlineCalendar.set(Calendar.DAY_OF_MONTH, day)
-            listener.datePickerInput.setText(day.toString() + "." + (month + 1) + "." + year)
+            listener.datePickerInput.setText(
+                java.text.DateFormat.getDateInstance(
+                    java.text.DateFormat.SHORT, Locale.getDefault(
+                        Locale.Category.FORMAT)).format(listener.taskDeadlineCalendar.time))
         }
     }
 
@@ -265,7 +269,10 @@ class TaskEditActivity : AppCompatActivity() {
             val listener = requireActivity() as TaskEditActivity
             listener.taskDeadlineCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             listener.taskDeadlineCalendar.set(Calendar.MINUTE, minute)
-            listener.timePickerInput.setText(String.format("%02d:%02d", hourOfDay, minute))
+            listener.timePickerInput.setText(
+                java.text.DateFormat.getTimeInstance(
+                    java.text.DateFormat.SHORT, Locale.getDefault(
+                        Locale.Category.FORMAT)).format(listener.taskDeadlineCalendar.time))
         }
     }
 
