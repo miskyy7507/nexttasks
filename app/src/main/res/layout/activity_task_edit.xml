@@ -154,6 +154,7 @@
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
             android:baselineAligned="false"
+            android:weightSum="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/taskListPicker">
@@ -161,7 +162,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskDate"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
@@ -172,21 +173,22 @@
                 android:hint="@string/date"
                 android:clickable="false"
                 android:inputType="none"
-                android:textSize="20sp">
+                android:textSize="20sp"
+                app:endIconMode="clear_text"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/taskDateInput"
                     android:cursorVisible="false"
-                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"/>
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskTime"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
@@ -197,15 +199,16 @@
                 android:hint="@string/time"
                 android:clickable="false"
                 android:inputType="none"
-                android:textSize="20sp">
+                android:textSize="20sp"
+                app:endIconMode="clear_text"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/taskTimeInput"
                     android:cursorVisible="false"
-                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"/>
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

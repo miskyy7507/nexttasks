@@ -15,7 +15,6 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
@@ -24,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
 import com.mm.nexttasks.db.entities.*
 import java.util.Calendar
+import java.util.Locale
 
 class TaskEditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTaskEditBinding
@@ -50,6 +50,9 @@ class TaskEditActivity : AppCompatActivity() {
         val priorityDao = appDatabase.priorityDao()
         val taskListDao = appDatabase.taskListDao()
 
+        val taskIdToEdit = intent.extras?.getLong("taskIdToEdit")
+        val taskToEdit = if (taskIdToEdit != null) taskDao.getTaskFromId(taskIdToEdit) else null
+
         binding = ActivityTaskEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -64,10 +67,11 @@ class TaskEditActivity : AppCompatActivity() {
 
         val categories = (
                 listOf(Category(0, getText(R.string.none).toString()))
-                    + categoryDao.getAll()
-                    + listOf(Category(-1, getText(R.string.new_category_item).toString()))
+                        + categoryDao.getAll()
+                        + listOf(Category(-1, getText(R.string.new_category_item).toString()))
                 ).toMutableList()
-        val categorySpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        val categorySpinnerAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = categorySpinnerAdapter
 
@@ -80,7 +84,7 @@ class TaskEditActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                if (position == categories.size -1) { // last item is the "New..." item
+                if (position == categories.size - 1) { // last item is the "New..." item
                     categorySpinner.setSelection(categorySpinnerPosition)
                     val alertDialog = AlertDialog.Builder(binding.root.context)
                     alertDialog.setTitle(getText(R.string.new_category_add_dialog))
@@ -93,7 +97,10 @@ class TaskEditActivity : AppCompatActivity() {
                         val newItem = input.text.toString()
                         if (newItem.isNotBlank()) {
                             val newlyInsertedCategoryId = categoryDao.insert(Category(0, newItem))
-                            categories.add(categories.size -1, Category(newlyInsertedCategoryId, newItem)) // Add new item before "Add New Item" special item
+                            categories.add(
+                                categories.size - 1,
+                                Category(newlyInsertedCategoryId, newItem)
+                            ) // Add new item before "Add New Item" special item
                             categorySpinnerAdapter.notifyDataSetChanged()
                             dialog.dismiss()
 //                            categorySpinner.setSelection(categories.size - 1) // Set spinner selection at the newly added item (atm it causes problems)
@@ -113,10 +120,11 @@ class TaskEditActivity : AppCompatActivity() {
 
         val priorities = (
                 listOf(Priority(0, getText(R.string.none).toString()))
-                    + priorityDao.getAll()
-                    + listOf(Priority(-1, getText(R.string.new_priority_item).toString()))
+                        + priorityDao.getAll()
+                        + listOf(Priority(-1, getText(R.string.new_priority_item).toString()))
                 ).toMutableList()
-        val prioritySpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
+        val prioritySpinnerAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, priorities)
         prioritySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         prioritySpinner.adapter = prioritySpinnerAdapter
 
@@ -129,7 +137,7 @@ class TaskEditActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                if (position == priorities.size -1) { // last item is the "New..." item
+                if (position == priorities.size - 1) { // last item is the "New..." item
                     prioritySpinner.setSelection(prioritySpinnerPosition)
                     val alertDialog = AlertDialog.Builder(binding.root.context)
                     alertDialog.setTitle(getText(R.string.new_category_add_dialog))
@@ -142,7 +150,10 @@ class TaskEditActivity : AppCompatActivity() {
                         val newItem = input.text.toString()
                         if (newItem.isNotBlank()) {
                             val newlyInsertedPriorityId = priorityDao.insert(Priority(0, newItem))
-                            priorities.add(priorities.size -1, Priority(newlyInsertedPriorityId, newItem)) // Add new item before "Add New Item" special item
+                            priorities.add(
+                                priorities.size - 1,
+                                Priority(newlyInsertedPriorityId, newItem)
+                            ) // Add new item before "Add New Item" special item
                             prioritySpinnerAdapter.notifyDataSetChanged()
                             dialog.dismiss()
                         }
@@ -160,19 +171,76 @@ class TaskEditActivity : AppCompatActivity() {
         }
 
         val taskLists = taskListDao.getAll()
-        val taskListSpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, taskLists)
+        val taskListSpinnerAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, taskLists)
         taskListSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskListSpinner.adapter = taskListSpinnerAdapter
+
+        taskDeadlineCalendar = Calendar.getInstance()
+        taskDeadlineCalendar.add(Calendar.DAY_OF_MONTH, 1)
+        taskDeadlineCalendar.set(Calendar.HOUR_OF_DAY, 23)
+        taskDeadlineCalendar.set(Calendar.MINUTE, 59)
+        taskDeadlineCalendar.set(Calendar.SECOND, 59)
+        taskDeadlineCalendar.set(Calendar.MILLISECOND, 0)
+
+        if (taskToEdit != null) {
+            titleInput.setText(taskToEdit.title)
+            taskDoneCheckbox.isChecked = taskToEdit.isDone
+
+            if (taskToEdit.categoryId != null) {
+                categorySpinner.setSelection(categorySpinnerAdapter.getPosition(categoryDao.getFromId(taskToEdit.categoryId)))
+            } else {
+                categorySpinner.setSelection(0)
+            }
+
+            if (taskToEdit.priorityId != null) {
+                prioritySpinner.setSelection(prioritySpinnerAdapter.getPosition(priorityDao.getFromId(taskToEdit.priorityId)))
+            } else {
+                prioritySpinner.setSelection(0)
+            }
+
+            taskListSpinner.setSelection(taskListSpinnerAdapter.getPosition(taskListDao.getFromId(taskToEdit.taskListId)))
+
+            taskDeadlineCalendar.time = taskToEdit.term!!
+        }
+
+        datePickerInput.setText(
+            java.text.DateFormat.getDateInstance(
+                java.text.DateFormat.SHORT, Locale.getDefault(
+                    Locale.Category.FORMAT
+                )
+            ).format(taskDeadlineCalendar.time)
+        )
+        timePickerInput.setText(
+            java.text.DateFormat.getTimeInstance(
+                java.text.DateFormat.SHORT, Locale.getDefault(
+                    Locale.Category.FORMAT
+                )
+            ).format(taskDeadlineCalendar.time)
+        )
+
+        datePickerInput.inputType = InputType.TYPE_NULL
+        datePickerInput.setOnClickListener {
+            DatePickerFragment().show(supportFragmentManager, "datePicker")
+        }
+
+        timePickerInput.inputType = InputType.TYPE_NULL
+        timePickerInput.setOnClickListener {
+            TimePickerFragment().show(supportFragmentManager, "timePicker")
+        }
 
         binding.addButton.setOnClickListener {
             binding.addButton.isClickable = false
             val taskName = titleInput.text?.trim().toString()
-            val taskListId = taskListSpinnerAdapter.getItem(taskListSpinner.selectedItemPosition)!!.taskListId
-            var priorityId: Long? = prioritySpinnerAdapter.getItem(prioritySpinner.selectedItemPosition)!!.priorityId
+            val taskListId =
+                taskListSpinnerAdapter.getItem(taskListSpinner.selectedItemPosition)!!.taskListId
+            var priorityId: Long? =
+                prioritySpinnerAdapter.getItem(prioritySpinner.selectedItemPosition)!!.priorityId
             if (priorityId == 0L) {
                 priorityId = null
             }
-            var categoryId: Long? = categorySpinnerAdapter.getItem(categorySpinner.selectedItemPosition)!!.categoryId
+            var categoryId: Long? =
+                categorySpinnerAdapter.getItem(categorySpinner.selectedItemPosition)!!.categoryId
             if (categoryId == 0L) {
                 categoryId = null
             }
@@ -188,39 +256,25 @@ class TaskEditActivity : AppCompatActivity() {
 
             val term = taskDeadlineCalendar.time
 
-            val taskToAdd = Task(0, taskName, taskListId, priorityId, categoryId, isDone, getColor(colorChosen), term)
 
-            taskDao.insert(taskToAdd)
+            val taskToAdd = Task(
+                taskToEdit?.taskId ?: 0,
+                taskName,
+                taskListId,
+                priorityId,
+                categoryId,
+                isDone,
+                getColor(colorChosen),
+                term
+            )
 
-//            Toast.makeText(this, getText(R.string.task_added_info), Toast.LENGTH_SHORT).show()
+            if (taskToEdit != null) {
+                taskDao.editTask(taskToAdd)
+            } else {
+                taskDao.insert(taskToAdd)
+            }
+
             onSupportNavigateUp()
-        }
-
-        taskDeadlineCalendar = Calendar.getInstance()
-//        taskDeadlineCalendar.time = Date()
-        taskDeadlineCalendar.add(Calendar.DAY_OF_MONTH, 1)
-        taskDeadlineCalendar.set(Calendar.HOUR_OF_DAY, 0)
-        taskDeadlineCalendar.set(Calendar.MINUTE, 0)
-        taskDeadlineCalendar.set(Calendar.SECOND, 0)
-        taskDeadlineCalendar.set(Calendar.MILLISECOND, 0)
-
-        datePickerInput.setText(
-                    taskDeadlineCalendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
-                            (taskDeadlineCalendar.get(Calendar.MONTH)+1).toString() + "." +
-                    taskDeadlineCalendar.get(Calendar.YEAR).toString()
-        )
-        timePickerInput.setText("00:00")
-
-//        taskDeadline = midnightOfTheNextDay.time
-
-        datePickerInput.inputType = InputType.TYPE_NULL
-        datePickerInput.setOnClickListener {
-            DatePickerFragment().show(supportFragmentManager, "datePicker")
-        }
-
-        timePickerInput.inputType = InputType.TYPE_NULL
-        timePickerInput.setOnClickListener {
-            TimePickerFragment().show(supportFragmentManager, "timePicker")
         }
 
     }
@@ -244,7 +298,10 @@ class TaskEditActivity : AppCompatActivity() {
             listener.taskDeadlineCalendar.set(Calendar.YEAR, year)
             listener.taskDeadlineCalendar.set(Calendar.MONTH, month)
             listener.taskDeadlineCalendar.set(Calendar.DAY_OF_MONTH, day)
-            listener.datePickerInput.setText(day.toString() + "." + (month + 1) + "." + year)
+            listener.datePickerInput.setText(
+                java.text.DateFormat.getDateInstance(
+                    java.text.DateFormat.SHORT, Locale.getDefault(
+                        Locale.Category.FORMAT)).format(listener.taskDeadlineCalendar.time))
         }
     }
 
@@ -265,7 +322,10 @@ class TaskEditActivity : AppCompatActivity() {
             val listener = requireActivity() as TaskEditActivity
             listener.taskDeadlineCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             listener.taskDeadlineCalendar.set(Calendar.MINUTE, minute)
-            listener.timePickerInput.setText(String.format("%02d:%02d", hourOfDay, minute))
+            listener.timePickerInput.setText(
+                java.text.DateFormat.getTimeInstance(
+                    java.text.DateFormat.SHORT, Locale.getDefault(
+                        Locale.Category.FORMAT)).format(listener.taskDeadlineCalendar.time))
         }
     }
 
