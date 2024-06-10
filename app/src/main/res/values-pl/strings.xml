@@ -28,4 +28,5 @@
     <string name="name">Nazwa</string>
     <string name="no_tasks_tip1">Brak zadań</string>
     <string name="no_tasks_tip2">Kliknij + aby dodać pierwsze zadanie.</string>
+    <string name="unspecified_separator_text">Nieokreślone</string>
 </resources>
