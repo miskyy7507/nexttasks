@@ -11,6 +11,9 @@ interface TaskListDao {
     @Query("SELECT * FROM TaskList")
     fun getAll(): List<TaskList>
 
+    @Query("SELECT * FROM TaskList WHERE taskListId = :taskListId")
+    fun getFromId(taskListId: Long): TaskList
+
     @Insert
     fun insert(taskList: TaskList): Long
 

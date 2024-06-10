@@ -1,5 +1,6 @@
 package com.mm.nexttasks.ui.taskList
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback
 import com.mm.nexttasks.MainApp
 import com.mm.nexttasks.R
+import com.mm.nexttasks.TaskEditActivity
 import com.mm.nexttasks.databinding.FragmentHomeBinding
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskDao
@@ -25,7 +27,7 @@ import java.util.Locale
 
 private const val VIEW_TYPE_ITEM = 1
 private const val VIEW_TYPE_SEPARATOR = 2
-class TaskListFragment : Fragment() {
+class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -48,6 +50,14 @@ class TaskListFragment : Fragment() {
             return fragment
         }
     }
+
+    override fun onItemClick(item: TaskListItem.TaskCardItem) {
+        val intent = Intent(requireContext(), TaskEditActivity::class.java)
+        val b = Bundle()
+        b.putLong("taskIdToEdit", item.taskDetails.taskId)
+        intent.putExtras(b)
+        startActivity(intent)
+    }
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -65,7 +75,7 @@ class TaskListFragment : Fragment() {
 
         setUpTaskListModels(selectedItemName)
         
-        val adapter = TaskListAdapter(requireContext(), taskModels)
+        val adapter = TaskListAdapter(requireContext(), taskModels, this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 

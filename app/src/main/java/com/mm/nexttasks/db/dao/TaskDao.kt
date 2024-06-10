@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.mm.nexttasks.db.entities.Task
 import com.mm.nexttasks.db.views.TaskDetails
 
@@ -20,6 +21,12 @@ interface TaskDao {
 
     @Insert
     fun insert(task: Task): Long
+
+    @Update
+    fun editTask(task: Task)
+
+    @Query("UPDATE Task SET isDone = :isDone WHERE taskId = :taskId")
+    fun updateDoneState(taskId: Long, isDone: Boolean)
 
     @Delete
     fun delete(task: Task)

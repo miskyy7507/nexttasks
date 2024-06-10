@@ -11,6 +11,9 @@ interface PriorityDao {
     @Query("SELECT * FROM Priority")
     fun getAll(): List<Priority>
 
+    @Query("SELECT * FROM Priority WHERE priorityId = :priorityId")
+    fun getFromId(priorityId: Long): Priority
+
     @Insert
     fun insert(priority: Priority): Long
 
