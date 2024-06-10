@@ -2,8 +2,11 @@ package com.mm.nexttasks
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
+import android.widget.EditText
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mm.nexttasks.databinding.ActivityMainBinding
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskListDao
+import com.mm.nexttasks.db.entities.Priority
+import com.mm.nexttasks.db.entities.TaskList
 import com.mm.nexttasks.ui.taskList.TaskListFragment
 
 class MainActivity : AppCompatActivity() {
@@ -55,11 +60,12 @@ class MainActivity : AppCompatActivity() {
 
         val taskListsList = taskListDao!!.getAll()
 
-        val allTaskListsMenuItem = navView.menu.add(Menu.FIRST, 0, Menu.NONE, getText(R.string.task_list_show_all))
+        val allTaskListsMenuItem = navView.menu.add(1, 0, Menu.NONE, getText(R.string.task_list_show_all)).setIcon(R.drawable.checklist_40dp)
         for (list in taskListsList) {
-            navView.menu.add(Menu.FIRST, list.taskListId.toInt(), Menu.NONE, list.name)
+            navView.menu.add(1, list.taskListId.toInt(), Menu.NONE, list.name)
         }
-        navView.menu.setGroupCheckable(Menu.FIRST, true, true)
+        navView.menu.add(2, 9999, Menu.NONE, getString(R.string.add_new_task_list)).setIcon(R.drawable.plus_32)
+        navView.menu.setGroupCheckable(1, true, true)
         allTaskListsMenuItem.setChecked(true)
         supportActionBar?.title = getText(R.string.task_list_show_all)
 
@@ -69,6 +75,30 @@ class MainActivity : AppCompatActivity() {
 
         // Set up the click listener for the navigation drawer items
         navView.setNavigationItemSelectedListener { menuItem ->
+            if (menuItem.itemId == 9999) {
+                val alertDialog = AlertDialog.Builder(binding.root.context)
+                alertDialog.setTitle(getString(R.string.add_new_task_list))
+
+                val input = EditText(binding.root.context)
+                input.inputType = InputType.TYPE_CLASS_TEXT
+                alertDialog.setView(input)
+
+                alertDialog.setPositiveButton(getText(R.string.add)) { dialog, _ ->
+                    val newTaskListName = input.text.toString()
+                    if (newTaskListName.isNotBlank()) {
+                        navView.menu.removeItem(9999)
+                        val newlyInsertedTaskListId = taskListDao!!.insert(TaskList(0, newTaskListName))
+                        navView.menu.add(Menu.FIRST, newlyInsertedTaskListId.toInt(), Menu.NONE, newTaskListName)
+                        navView.menu.add(2, 9999, Menu.NONE, getString(R.string.add_new_task_list))
+                        dialog.dismiss()
+                    }
+                }
+
+                alertDialog.setNegativeButton(getText(R.string.cancel)) { dialog, _ -> dialog.cancel() }
+
+                alertDialog.show()
+                return@setNavigationItemSelectedListener false
+            }
             // Get the selected item from the database
             val selectedItem = menuItem.title.toString()
             supportActionBar?.title = selectedItem
@@ -82,20 +112,6 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.close()
             true
         }
-
-//        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        appBarConfiguration = AppBarConfiguration(setOf(
-//                R.id.nav_home), drawerLayout)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {

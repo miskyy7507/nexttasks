@@ -64,4 +64,7 @@
     <string name="task_name_view_template" translatable="false">[%1$s]</string>
     <string name="date_and_time_task_list_template" translatable="false">%1$s, %2$s</string>
     <string name="unspecified_separator_text">Unspecified</string>
+    <string name="task_edit_edit_mode">Edit task</string>
+    <string name="task_edit_add_mode">Add task</string>
+    <string name="add_new_task_list">Add new task list</string>
 </resources>
