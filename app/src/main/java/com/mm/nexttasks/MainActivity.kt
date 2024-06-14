@@ -14,9 +14,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.mm.nexttasks.databinding.ActivityMainBinding
-import com.mm.nexttasks.db.AppDatabase
-import com.mm.nexttasks.db.dao.TaskListDao
-import com.mm.nexttasks.db.entities.Priority
 import com.mm.nexttasks.db.entities.TaskList
 import com.mm.nexttasks.ui.taskList.TaskListFragment
 
@@ -25,9 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private var _database: AppDatabase? = null
-    private val database get() = _database!!
-    private var taskListDao: TaskListDao? = null
+    private var database = DatabaseProvider.getDatabase(this)
+    private var taskListDao = database.taskListDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +34,6 @@ class MainActivity : AppCompatActivity() {
         val toolbar = binding.appBarMain.toolbar
 
         setSupportActionBar(toolbar)
-
-        _database = MainApp.database!!
-        taskListDao = database.taskListDao()
 
         binding.appBarMain.fab.setOnClickListener {
             val intent = Intent(this, TaskEditActivity::class.java)
@@ -58,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        val taskListsList = taskListDao!!.getAll()
+        val taskListsList = taskListDao.getAll()
 
         val allTaskListsMenuItem = navView.menu.add(1, 0, Menu.NONE, getText(R.string.task_list_show_all)).setIcon(R.drawable.checklist_40dp)
         for (list in taskListsList) {
@@ -87,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                     val newTaskListName = input.text.toString()
                     if (newTaskListName.isNotBlank()) {
                         navView.menu.removeItem(9999)
-                        val newlyInsertedTaskListId = taskListDao!!.insert(TaskList(0, newTaskListName))
+                        val newlyInsertedTaskListId = taskListDao.insert(TaskList(0, newTaskListName))
                         navView.menu.add(Menu.FIRST, newlyInsertedTaskListId.toInt(), Menu.NONE, newTaskListName)
                         navView.menu.add(2, 9999, Menu.NONE, getString(R.string.add_new_task_list))
                         dialog.dismiss()

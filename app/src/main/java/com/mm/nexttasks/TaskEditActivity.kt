@@ -38,14 +38,14 @@ class TaskEditActivity : AppCompatActivity() {
 
     private lateinit var taskDeadlineCalendar: Calendar
 
+    private val appDatabase = DatabaseProvider.getDatabase(this)
+    private val taskDao = appDatabase.taskDao()
+    private val categoryDao = appDatabase.categoryDao()
+    private val priorityDao = appDatabase.priorityDao()
+    private val taskListDao = appDatabase.taskListDao()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val appDatabase = MainApp.database!!
-        val taskDao = appDatabase.taskDao()
-        val categoryDao = appDatabase.categoryDao()
-        val priorityDao = appDatabase.priorityDao()
-        val taskListDao = appDatabase.taskListDao()
 
         val taskIdToEdit = intent.extras?.getLong("taskIdToEdit")
         val taskToEdit = if (taskIdToEdit != null) taskDao.getTaskFromId(taskIdToEdit) else null

@@ -13,13 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback
-import com.mm.nexttasks.MainApp
+import com.mm.nexttasks.DatabaseProvider
 import com.mm.nexttasks.R
 import com.mm.nexttasks.TaskEditActivity
 import com.mm.nexttasks.databinding.FragmentHomeBinding
 import com.mm.nexttasks.db.AppDatabase
 import com.mm.nexttasks.db.dao.TaskDao
-import com.mm.nexttasks.db.views.TaskDetails
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
@@ -30,14 +29,10 @@ private const val VIEW_TYPE_SEPARATOR = 2
 class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private var _database: AppDatabase? = null
-    private val database get() = _database!!
-    private var taskDao: TaskDao? = null
+    private lateinit var database: AppDatabase
+    private lateinit var taskDao: TaskDao
 
     private val taskModels: ArrayList<TaskListItem> = ArrayList()
 
@@ -68,10 +63,10 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
         val recyclerView = binding.todoList
 
-        _database = MainApp.database!!
-        taskDao = database.taskDao()
-
         val selectedItemName = if (arguments != null) requireArguments().getString("selectedTaskName", null) else null
+
+        database = DatabaseProvider.getDatabase(this.requireContext())
+        taskDao = database.taskDao()
 
         setUpTaskListModels(selectedItemName)
         
@@ -81,7 +76,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
         val swipeHandler = object : SwipeCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
+                val position = viewHolder.absoluteAdapterPosition
                 val taskToRemove = adapter.getTaskList()[position] as TaskListItem.TaskCardItem
                 val separatorItem = if (
                     adapter.getItemViewType(position - 1) == VIEW_TYPE_SEPARATOR &&
@@ -112,7 +107,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
                                 BaseCallback.DISMISS_EVENT_SWIPE, BaseCallback.DISMISS_EVENT_TIMEOUT,
                                 BaseCallback.DISMISS_EVENT_MANUAL, BaseCallback.DISMISS_EVENT_CONSECUTIVE -> {
                                     // remove task from database only when snackbar with undo button is gone
-                                    taskDao!!.delete(taskDao!!.getTaskFromId(taskToRemove.taskDetails.taskId))
+                                    taskDao.delete(taskDao.getTaskFromId(taskToRemove.taskDetails.taskId))
                                 }
 
                                 BaseCallback.DISMISS_EVENT_ACTION -> {
@@ -138,9 +133,9 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private fun setUpTaskListModels(selectedItemName: String?) {
         val tasks = if (selectedItemName != null) {
-            taskDao!!.getTasksFromList(selectedItemName)
+            taskDao.getTasksFromList(selectedItemName)
         } else {
-            taskDao!!.getAll()
+            taskDao.getAll()
         }
         val tasksDateSorted = tasks.sortedWith(compareBy(nullsLast()) { it.term })
         if (tasks.isNotEmpty()) {
