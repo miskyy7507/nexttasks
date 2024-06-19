@@ -17,7 +17,6 @@ import android.widget.Spinner
 import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.mm.nexttasks.databinding.ActivityTaskEditBinding
@@ -27,8 +26,6 @@ import java.util.Locale
 
 class TaskEditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTaskEditBinding
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var titleInput: TextInputEditText
     private lateinit var taskDoneCheckbox: CheckBox
@@ -41,17 +38,23 @@ class TaskEditActivity : AppCompatActivity() {
 
     private lateinit var taskDeadlineCalendar: Calendar
 
+    private val appDatabase = DatabaseProvider.getDatabase(this)
+    private val taskDao = appDatabase.taskDao()
+    private val categoryDao = appDatabase.categoryDao()
+    private val priorityDao = appDatabase.priorityDao()
+    private val taskListDao = appDatabase.taskListDao()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appDatabase = MainApp.database!!
-        val taskDao = appDatabase.taskDao()
-        val categoryDao = appDatabase.categoryDao()
-        val priorityDao = appDatabase.priorityDao()
-        val taskListDao = appDatabase.taskListDao()
-
         val taskIdToEdit = intent.extras?.getLong("taskIdToEdit")
         val taskToEdit = if (taskIdToEdit != null) taskDao.getTaskFromId(taskIdToEdit) else null
+
+        if (taskToEdit != null) {
+            supportActionBar?.title = getString(R.string.task_edit_edit_mode)
+        } else {
+            supportActionBar?.title = getString(R.string.task_edit_add_mode)
+        }
 
         binding = ActivityTaskEditBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -68,4 +68,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="task_list_view">Task list view</string>
     <string name="unspecified_separator_text">Unspecified</string>
+    <string name="task_edit_edit_mode">Edit task</string>
+    <string name="task_edit_add_mode">Add task</string>
+    <string name="add_new_task_list">Add new task list</string>
 </resources>

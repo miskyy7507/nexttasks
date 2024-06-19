@@ -37,4 +37,4 @@ view = { group = "com.kizitonwose.calendar", name = "view", version.ref = "view"
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+androidx-room = { id = "androidx.room", version.ref = "roomVersion" }

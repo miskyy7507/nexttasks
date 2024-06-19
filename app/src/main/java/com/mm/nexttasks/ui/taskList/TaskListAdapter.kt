@@ -1,17 +1,15 @@
 package com.mm.nexttasks.ui.taskList
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mm.nexttasks.MainApp
+import com.mm.nexttasks.DatabaseProvider
 import com.mm.nexttasks.R
 import com.mm.nexttasks.databinding.TaskCardBinding
 import com.mm.nexttasks.databinding.TaskListSeparatorItemBinding
-import com.mm.nexttasks.db.views.TaskDetails
 import java.text.DateFormat
 import java.util.Locale
 
@@ -74,8 +72,7 @@ class TaskListAdapter(private val context: Context, private val taskList: ArrayL
                 }
 
                 holder.binding.taskLabel.setOnCheckedChangeListener { buttonView, isChecked ->
-                    val database = MainApp.database!!
-                    val taskDao = database.taskDao()
+                    val taskDao = DatabaseProvider.getDatabase(context).taskDao()
                     taskDao.updateDoneState(taskItem.taskDetails.taskId, isChecked)
                     if (isChecked) {
                         holder.binding.taskLabel.paintFlags = (holder.binding.taskLabel.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
