@@ -27,11 +27,12 @@
     <string name="time">Godzina</string>
     <string name="name">Nazwa</string>
     <string name="no_tasks_tip1">Brak zadań</string>
-    <string name="no_tasks_tip2">Kliknij + aby dodać pierwsze zadanie.</string>
+    <string name="no_tasks_tip2">Kliknij + aby dodać nowe zadanie.</string>
     <string name="unspecified_separator_text">Nieokreślone</string>
     <string name="task_edit_edit_mode">Edytuj zadanie</string>
     <string name="task_edit_add_mode">Dodaj zadanie</string>
     <string name="add_new_task_list">Dodaj nową listę zadań</string>
     <string name="calendar_view">Widok kalendarza</string>
     <string name="task_list_view">Widok listy zadań</string>
+    <string name="edit">Edytuj</string>
 </resources>

@@ -14,7 +14,7 @@
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="16sp"
-        tools:text="22" />
+        tools:text="31" />
 
 <!--    <View-->
 <!--        android:id="@+id/task_here_dots"-->

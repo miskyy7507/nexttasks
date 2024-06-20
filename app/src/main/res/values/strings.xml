@@ -59,16 +59,15 @@
     <string name="time">Time</string>
     <string name="name">Name</string>
     <string name="no_tasks_tip1">No tasks</string>
-    <string name="no_tasks_tip2">Click + to add the first task.</string>
+    <string name="no_tasks_tip2">Click + to add a new task.</string>
     <string name="text_line_separator" translatable="false">·</string>
     <string name="task_name_view_template" translatable="false">[%1$s]</string>
     <string name="date_and_time_task_list_template" translatable="false">%1$s, %2$s</string>
     <string name="calendar_view">Calendar View</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="task_list_view">Task list view</string>
     <string name="unspecified_separator_text">Unspecified</string>
     <string name="task_edit_edit_mode">Edit task</string>
     <string name="task_edit_add_mode">Add task</string>
     <string name="add_new_task_list">Add new task list</string>
+    <string name="edit">Edit</string>
 </resources>

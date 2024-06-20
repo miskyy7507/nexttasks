@@ -36,11 +36,24 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
     private val taskModels: ArrayList<TaskListItem> = ArrayList()
 
+    private var selectedItemName: String? = null
+    private var selectedTaskDay: Long? = null
+
     companion object {
-         fun newInstance(selectedTaskName: String?): TaskListFragment {
+        @JvmStatic
+        fun newInstance(selectedTaskName: String?): TaskListFragment {
             val fragment = TaskListFragment()
             val b = Bundle()
             b.putString("selectedTaskName", selectedTaskName)
+            fragment.arguments = b
+            return fragment
+        }
+
+        @JvmStatic
+        fun newInstance(dateTimestamp: Long): TaskListFragment {
+            val fragment = TaskListFragment()
+            val b = Bundle()
+            b.putLong("selectedTaskDay", dateTimestamp)
             fragment.arguments = b
             return fragment
         }
@@ -63,12 +76,13 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
 
         val recyclerView = binding.todoList
 
-        val selectedItemName = if (arguments != null) requireArguments().getString("selectedTaskName", null) else null
+        selectedItemName = if (arguments != null) requireArguments().getString("selectedTaskName", null) else null
+        selectedTaskDay = if (arguments != null) requireArguments().getLong("selectedTaskDay", 0) else 0
 
         database = DatabaseProvider.getDatabase(this.requireContext())
         taskDao = database.taskDao()
 
-        setUpTaskListModels(selectedItemName)
+        setUpTaskListModels()
         
         val adapter = TaskListAdapter(requireContext(), taskModels, this)
         recyclerView.adapter = adapter
@@ -131,9 +145,11 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         _binding = null
     }
 
-    private fun setUpTaskListModels(selectedItemName: String?) {
+    private fun setUpTaskListModels() {
         val tasks = if (selectedItemName != null) {
-            taskDao.getTasksFromList(selectedItemName)
+            taskDao.getTasksFromList(selectedItemName!!)
+        } else if (selectedTaskDay != 0L) {
+            taskDao.getTaskFromDay(selectedTaskDay!!)
         } else {
             taskDao.getAll()
         }

@@ -9,6 +9,7 @@ import android.text.format.DateFormat
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
@@ -35,6 +36,7 @@ class TaskEditActivity : AppCompatActivity() {
     private lateinit var categorySpinner: Spinner
     private lateinit var prioritySpinner: Spinner
     private lateinit var taskListSpinner: Spinner
+    private lateinit var addTaskButton: Button
 
     private lateinit var taskDeadlineCalendar: Calendar
 
@@ -50,12 +52,6 @@ class TaskEditActivity : AppCompatActivity() {
         val taskIdToEdit = intent.extras?.getLong("taskIdToEdit")
         val taskToEdit = if (taskIdToEdit != null) taskDao.getTaskFromId(taskIdToEdit) else null
 
-        if (taskToEdit != null) {
-            supportActionBar?.title = getString(R.string.task_edit_edit_mode)
-        } else {
-            supportActionBar?.title = getString(R.string.task_edit_add_mode)
-        }
-
         binding = ActivityTaskEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -67,6 +63,15 @@ class TaskEditActivity : AppCompatActivity() {
         categorySpinner = binding.taskCategorySpinner
         prioritySpinner = binding.taskPrioritySpinner
         taskListSpinner = binding.taskListPicker
+        addTaskButton = binding.addButton
+
+        if (taskToEdit != null) {
+            supportActionBar?.title = getString(R.string.task_edit_edit_mode)
+            addTaskButton.text = getString(R.string.edit)
+        } else {
+            supportActionBar?.title = getString(R.string.task_edit_add_mode)
+            addTaskButton.text = getString(R.string.add)
+        }
 
         val categories = (
                 listOf(Category(0, getText(R.string.none).toString()))

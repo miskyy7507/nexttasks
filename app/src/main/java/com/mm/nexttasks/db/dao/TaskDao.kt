@@ -19,6 +19,9 @@ interface TaskDao {
     @Query("SELECT * FROM Task WHERE taskId = :taskId")
     fun getTaskFromId(taskId: Long): Task
 
+    @Query("SELECT * FROM TaskDetails WHERE term >= :day AND term < :day + 86400000")
+    fun getTaskFromDay(day: Long): List<TaskDetails>
+
     @Insert
     fun insert(task: Task): Long
 
