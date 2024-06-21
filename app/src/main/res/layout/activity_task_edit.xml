@@ -174,7 +174,6 @@
                 android:clickable="false"
                 android:inputType="none"
                 android:textSize="20sp"
-                app:endIconMode="clear_text"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -182,6 +181,7 @@
                     android:cursorVisible="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -200,7 +200,6 @@
                 android:clickable="false"
                 android:inputType="none"
                 android:textSize="20sp"
-                app:endIconMode="clear_text"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -208,6 +207,7 @@
                     android:cursorVisible="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
