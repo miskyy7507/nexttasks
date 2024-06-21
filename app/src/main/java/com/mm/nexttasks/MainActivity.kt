@@ -17,8 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.mm.nexttasks.databinding.ActivityMainBinding
 import com.mm.nexttasks.db.entities.TaskList
-import com.mm.nexttasks.db.AppDatabase
-import com.mm.nexttasks.db.dao.TaskListDao
 import com.mm.nexttasks.ui.calendar.CalendarFragment
 import com.mm.nexttasks.ui.taskList.TaskListFragment
 
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        populateNavMenu();
+        populateNavMenu()
     }
 
     private fun populateNavMenu() {

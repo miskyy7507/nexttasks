@@ -26,11 +26,14 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 
-private lateinit var selectedDate: LocalDate
+private val today = LocalDate.now()
+private var selectedDate = today
+
 class CalendarFragment : Fragment() {
     private lateinit var binding: FragmentCalendarBinding
 
@@ -47,14 +50,14 @@ class CalendarFragment : Fragment() {
         val endMonth = currentMonth.plusMonths(100)
         val daysOfWeek = daysOfWeek()
 
-        selectedDate = LocalDate.now()
+        val titleFormatter = DateTimeFormatter.ofPattern("MMMM yyyy")
 
         configureBinders(daysOfWeek)
         binding.calendar.setup(startMonth, endMonth, daysOfWeek.first())
-        binding.calendar.scrollToMonth(currentMonth)
+        binding.calendar.scrollToDate(today)
 
         binding.calendar.monthScrollListener = {
-            toolbar.title = it.yearMonth.toString()
+            toolbar.title = titleFormatter.format(it.yearMonth)
         }
 
         updateList(selectedDate)
@@ -63,6 +66,7 @@ class CalendarFragment : Fragment() {
     }
 
     private fun updateList(date: LocalDate) {
+        // hardcoded for UTC+2 (CEST) timezone for now
         val timestamp = date.atStartOfDay().toInstant(ZoneOffset.ofHours(2)).toEpochMilli()
 
         Log.d(null, timestamp.toString())
@@ -101,16 +105,26 @@ class CalendarFragment : Fragment() {
             override fun create(view: View) = DayViewContainer(view)
 
             override fun bind(container: DayViewContainer, data: CalendarDay) {
-                container.dayTextView.text = data.date.dayOfMonth.toString()
+                val textView = container.dayTextView
+
+                textView.text = data.date.dayOfMonth.toString()
                 container.day = data
 
                 container.dayTextView.alpha = if (data.position == DayPosition.MonthDate) 1.0f else 0.3f
 
-                if (data.date == selectedDate) {
-                    container.dayTextView.setTextColor(requireContext().getColor(R.color.app_theme_color))
-                }
-                else {
-                    container.dayTextView.setTextColor(Color.BLACK)
+                when (data.date) {
+                    today -> {
+                        textView.setTextColor(Color.WHITE)
+                        textView.setBackgroundResource(R.drawable.calendar_date_today_bg)
+                    }
+                    selectedDate -> {
+                        textView.setTextColor(requireContext().getColor(R.color.app_theme_color_darker))
+                        textView.setBackgroundResource(R.drawable.calendar_date_selected_bg)
+                    }
+                    else -> {
+                        textView.setTextColor(Color.BLACK)
+                        textView.background = null
+                    }
                 }
             }
         }

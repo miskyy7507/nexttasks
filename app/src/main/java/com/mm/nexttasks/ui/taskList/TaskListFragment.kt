@@ -160,26 +160,33 @@ class TaskListFragment : Fragment(), TaskListAdapter.OnItemClickListener {
         val lastTaskDate = Calendar.getInstance()
         lastTaskDate.time = Date(0)
         var noDateSetSeparator = false
-        for (task in tasksDateSorted) {
-            if (task.term == null) {
-                if (!noDateSetSeparator) {
-                    taskModels.add(TaskListItem.TaskListSeparatorItem(getText(R.string.unspecified_separator_text)))
-                    noDateSetSeparator = true
+        if (selectedTaskDay == 0L) {
+            for (task in tasksDateSorted) {
+                if (task.term == null) {
+                    if (!noDateSetSeparator) {
+                        taskModels.add(TaskListItem.TaskListSeparatorItem(getText(R.string.unspecified_separator_text)))
+                        noDateSetSeparator = true
+                    }
+                    taskModels.add(TaskListItem.TaskCardItem(task))
+                } else {
+                    val currentTaskDate = Calendar.getInstance()
+                    currentTaskDate.time = task.term
+                    if (!(
+                                currentTaskDate.get(Calendar.YEAR) == lastTaskDate.get(Calendar.YEAR) &&
+                                        currentTaskDate.get(Calendar.MONTH) == lastTaskDate.get(Calendar.MONTH) &&
+                                        currentTaskDate.get(Calendar.DAY_OF_MONTH) == lastTaskDate.get(Calendar.DAY_OF_MONTH)
+                                )) {
+                        taskModels.add(TaskListItem.TaskListSeparatorItem(DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault(Locale.Category.FORMAT)).format(currentTaskDate.time)))
+                    }
+                    lastTaskDate.time = currentTaskDate.time
+                    taskModels.add(TaskListItem.TaskCardItem(task))
                 }
-                taskModels.add(TaskListItem.TaskCardItem(task))
-            } else {
-                val currentTaskDate = Calendar.getInstance()
-                currentTaskDate.time = task.term
-                if (!(
-                            currentTaskDate.get(Calendar.YEAR) == lastTaskDate.get(Calendar.YEAR) &&
-                                    currentTaskDate.get(Calendar.MONTH) == lastTaskDate.get(Calendar.MONTH) &&
-                                    currentTaskDate.get(Calendar.DAY_OF_MONTH) == lastTaskDate.get(Calendar.DAY_OF_MONTH)
-                            )) {
-                    taskModels.add(TaskListItem.TaskListSeparatorItem(DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault(Locale.Category.FORMAT)).format(currentTaskDate.time)))
-                }
-                lastTaskDate.time = currentTaskDate.time
+            }
+        } else {
+            for (task in tasksDateSorted) {
                 taskModels.add(TaskListItem.TaskCardItem(task))
             }
         }
+
     }
 }
